@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.UUID;
+
 @Component
 public class JwtTokenProvider {
     @Value("${jwt.secret}")
@@ -56,8 +58,17 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public Date getExpirationTimeTokenFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration();
+    public LocalDateTime getExpirationTimeTokenFromJwtToken(String token) {
+        Date expirationDate = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+
+        // Chuyển từ Date sang LocalDateTime
+        return expirationDate.toInstant()
+                .atZone(ZoneId.systemDefault())  // Sử dụng múi giờ hệ thống
+                .toLocalDateTime();
     }
 
     public boolean validateJwtToken(String token) {

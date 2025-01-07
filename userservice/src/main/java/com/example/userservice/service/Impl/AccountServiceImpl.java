@@ -1,5 +1,6 @@
 package com.example.userservice.service.Impl;
 
+import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.entity.Account;
 import com.example.userservice.repository.AccountRepository;
@@ -18,29 +19,25 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public int checkLogin(LoginRequest loginRequest) {
+    public int checkLogin(LoginRequest loginRequest) throws ResourceNotFoundException {
         // Tìm tài khoản dựa trên email
-        Optional<Account> optionalAccount = accountRepository.findByEmail(loginRequest.getEmail());
-
-        // Nếu không tìm thấy tài khoản, trả về 0 (không tồn tại)
-        if(optionalAccount.isEmpty()) {
-            return 0;
-        }
-
-        // Lấy tài khoản
-        Account account = optionalAccount.get();
+        Account account = accountRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Not account with " + loginRequest.getEmail()));
 
         // Kiểm tra mật khẩu nếu email đúng
         if (passwordEncoder.matches(loginRequest.getPassword(), account.getPassword())) {
             return 1;  // Đăng nhập thành công
         }
-
-        // Nếu mật khẩu sai, trả về 2 (sai mật khẩu)
-        return 2;
+        return 0;
     }
 
     @Override
     public Optional<Account> getAccountByIdAccount(int idAccount) {
         return accountRepository.findById(idAccount);
+    }
+
+    @Override
+    public Optional<Account> getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 }

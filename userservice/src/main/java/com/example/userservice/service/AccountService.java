@@ -6,6 +6,7 @@ import com.example.userservice.entity.Account;
 import java.util.Optional;
 
 public interface AccountService {
-    int checkLogin(LoginRequest loginRequest);
+    int checkLogin(LoginRequest loginRequest) throws Exception;
     Optional<Account> getAccountByIdAccount(int idAccount);
+    Optional<Account> getAccountByEmail(String email);
 }
