@@ -38,6 +38,4 @@ public class Account {
 
     @Column(nullable = false)
     private int idRole;
-
-
 }
