@@ -10,6 +10,8 @@
         <option value="$PROJECT_DIR$/../commonservice/pom.xml" />
         <option value="$PROJECT_DIR$/commonservice/pom.xml" />
         <option value="$PROJECT_DIR$/../userservice/pom.xml" />
+        <option value="$PROJECT_DIR$/../apigateway/pom.xml" />
+        <option value="$PROJECT_DIR$/apigateway/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

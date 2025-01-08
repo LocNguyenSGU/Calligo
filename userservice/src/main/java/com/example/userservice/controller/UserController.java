@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/users")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -39,6 +39,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getAllUser() {
+        System.out.println("Goi get all usser");
         List<UserResponse> resp = userService.getAllUser();
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }

@@ -10,6 +10,9 @@ import com.example.userservice.dto.response.ResponseData;
 import com.example.userservice.security.JwtTokenProvider;
 import com.example.userservice.service.AccountService;
 import com.example.userservice.service.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
+@Tag(name = "API auth", description = "Api for auth")
 public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -37,6 +41,13 @@ public class AuthController {
     @Autowired
     private AccountService accountService;
 
+    @Operation(summary = "Login",
+    description = "Api for login",
+    responses = {
+            @ApiResponse (responseCode = "401", description = "Sai thong tin dang nhap"),
+            @ApiResponse (responseCode = "200", description = "Danh nhap than cong"),
+            @ApiResponse (responseCode = "400", description = "Sai thong tin dau vao")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         // Kiểm tra đăng nhập
