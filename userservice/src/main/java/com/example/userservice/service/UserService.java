@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 public interface UserService {
-    UserCreateRequest createUser(UserCreateRequest userCreateRequest);
+    UserResponse createUser(UserCreateRequest userCreateRequest);
     List<UserResponse> getAllUser();
+
+    boolean existsByPhoneNumber(String phone);
+    boolean existsByIdAccount(int idAccount);
 }

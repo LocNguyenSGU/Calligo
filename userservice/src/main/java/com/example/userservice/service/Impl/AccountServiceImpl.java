@@ -2,13 +2,16 @@ package com.example.userservice.service.Impl;
 
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.userservice.dto.request.LoginRequest;
+import com.example.userservice.dto.request.SignUpRequest;
 import com.example.userservice.entity.Account;
+import com.example.userservice.mapper.AccountMapper;
 import com.example.userservice.repository.AccountRepository;
 import com.example.userservice.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -17,6 +20,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AccountMapper accountMapper;
 
     @Override
     public int checkLogin(LoginRequest loginRequest) throws ResourceNotFoundException {
@@ -39,5 +44,20 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Optional<Account> getAccountByEmail(String email) {
         return accountRepository.findByEmail(email);
+    }
+
+    @Override
+    public void createAccount(SignUpRequest signUpRequest) {
+        Account account = accountMapper.toAccount(signUpRequest);
+        account.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        account.setCreatedAt(LocalDateTime.now());
+        account.setActive(true);
+        account.setIdRole(1); // user
+        accountRepository.save(account);
+    }
+
+    @Override
+    public boolean existsAccountByEmail(String email) {
+        return accountRepository.existsByEmail(email);
     }
 }

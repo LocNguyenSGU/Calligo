@@ -1,14 +1,17 @@
 package com.example.userservice.controller;
 
+import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.exception.UnauthorizedException;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.RefreshTokenCreateRequest;
+import com.example.userservice.dto.request.SignUpRequest;
 import com.example.userservice.dto.response.ResponseData;
 import com.example.userservice.security.JwtTokenProvider;
 import com.example.userservice.service.AccountService;
 import com.example.userservice.service.RefreshTokenService;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -63,5 +66,18 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(responseData);
+    }
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
+        if(accountService.existsAccountByEmail(signUpRequest.getEmail())) throw new InvalidInputException("Email da ton tai");
+        if(!signUpRequest.isPasswordEquals()) throw new InvalidInputException("Mat khau nhap lai khong khop");
+
+        accountService.createAccount(signUpRequest);
+        ResponseData responseData = new ResponseData();
+        responseData.setCode(200);
+        responseData.setMessage("Tao tai khoan thanh cong");
+        responseData.setStatus(HttpStatus.OK);
+        responseData.setData("");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 }

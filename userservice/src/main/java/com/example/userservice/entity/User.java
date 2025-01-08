@@ -30,7 +30,7 @@ public class User {
     @Column(length = 255)
     private String address;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="id_account")
     private Account account;
-
 }

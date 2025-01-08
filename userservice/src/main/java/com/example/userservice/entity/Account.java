@@ -32,8 +32,8 @@ public class Account {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="id_user")
+
+    @OneToOne(mappedBy = "account")
     private User user;
 
     @Column(nullable = false)

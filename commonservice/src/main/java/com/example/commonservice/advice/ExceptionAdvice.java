@@ -4,6 +4,8 @@ import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.exception.UnauthorizedException;
 import com.example.commonservice.model.ErrorMessage;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -66,5 +68,4 @@ public class ExceptionAdvice {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
 }
