@@ -8,6 +8,7 @@ import com.example.userservice.dto.response.ResponseData;
 import com.example.userservice.security.JwtTokenProvider;
 import com.example.userservice.service.AccountService;
 import com.example.userservice.service.RefreshTokenService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class AuthController {
     private AccountService accountService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         // Kiểm tra đăng nhập
         int checkLogin = accountService.checkLogin(loginRequest);
 
