@@ -10,6 +10,7 @@ import com.example.userservice.service.AccountService;
 import com.example.userservice.service.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -30,5 +31,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshToken.setAccount(account);
         refreshToken.setActive(true);
         refreshTokenRepository.save(refreshToken);
+    }
+
+    @Override
+    public boolean exitsRefreshTokenByEmail(String refreshToken, String email) {
+        return refreshTokenRepository.existsByTokenAndAccount_Email(refreshToken, email);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByToken(String refreshToken) {
+        refreshTokenRepository.deleteByToken(refreshToken);
     }
 }
