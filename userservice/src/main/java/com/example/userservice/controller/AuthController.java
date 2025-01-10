@@ -13,6 +13,7 @@ import com.example.userservice.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,5 +91,29 @@ public class AuthController {
         responseData.setStatus(HttpStatus.OK);
         responseData.setData("");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @PostMapping("/validate-token")
+    public ResponseEntity<ResponseData> validateToken(HttpServletRequest request) {
+        String accessToken = request.getHeader("AUTHORIZATION").substring(7);
+        System.out.println("accessToken from auth-controller: " + accessToken);
+        boolean isValidated = jwtTokenProvider.validateJwtToken(accessToken);
+        ResponseData responseData = new ResponseData();
+
+        if (isValidated) {
+            // Nếu token hợp lệ
+            responseData.setCode(200);
+            responseData.setStatus(HttpStatus.OK);
+            responseData.setMessage("Token hợp lệ");
+            responseData.setData(accessToken);
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        }
+
+        // Nếu token không hợp lệ
+        responseData.setCode(401);
+        responseData.setStatus(HttpStatus.UNAUTHORIZED);
+        responseData.setMessage("Token không hợp lệ");
+        responseData.setData(accessToken);
+        return new ResponseEntity<>(responseData, HttpStatus.UNAUTHORIZED);
     }
 }
