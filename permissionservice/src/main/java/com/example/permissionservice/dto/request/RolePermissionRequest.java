@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RolePermissionCreateRequest {
+public class RolePermissionRequest {
     private int idPermission;
     @ValidEnum(enumClass = RolePermissionEnum.class, message = "Invalid action value")
     private String action;

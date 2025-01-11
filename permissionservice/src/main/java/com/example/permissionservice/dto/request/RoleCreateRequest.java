@@ -20,5 +20,5 @@ public class RoleCreateRequest {
     private String description;
 
     @Valid // Quan trọng: cần thêm @Valid để kiểm tra các phần tử bên trong
-    private List<RolePermissionCreateRequest> rolePermissionCreateRequests;
+    private List<RolePermissionRequest> rolePermissionRequests;
 }

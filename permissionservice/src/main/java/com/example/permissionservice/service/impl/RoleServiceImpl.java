@@ -3,6 +3,7 @@ package com.example.permissionservice.service.impl;
 import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.permissionservice.dto.request.RoleCreateRequest;
+import com.example.permissionservice.dto.request.RolePermissionRequest;
 import com.example.permissionservice.entity.Permission;
 import com.example.permissionservice.entity.Role;
 import com.example.permissionservice.entity.RolePermisson;
@@ -10,10 +11,12 @@ import com.example.permissionservice.mapper.RoleMapper;
 import com.example.permissionservice.mapper.RolePermissionMapper;
 import com.example.permissionservice.repository.RoleRepository;
 import com.example.permissionservice.service.PermissionService;
+import com.example.permissionservice.service.RolePermissonService;
 import com.example.permissionservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -28,6 +31,8 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private PermissionService permissionService;
     @Autowired
+    private RolePermissonService rolePermissonService;
+    @Autowired
     private RolePermissionMapper rolePermissionMapper;
 
     @Override
@@ -35,7 +40,7 @@ public class RoleServiceImpl implements RoleService {
         try {
             // 1. Tạo danh sách RolePermission từ request
             List<RolePermisson> rolePermissonList = roleCreateRequest
-                    .getRolePermissionCreateRequests()
+                    .getRolePermissionRequests()
                     .stream()
                     .map(rolePermissionRequest -> {
                         RolePermisson rolePermisson = rolePermissionMapper.toRolePermission(rolePermissionRequest);
@@ -65,5 +70,48 @@ public class RoleServiceImpl implements RoleService {
         }catch (DataIntegrityViolationException ex) {
             throw new InvalidInputException("Ten quyen da ton tai: " + roleCreateRequest.getRoleName());
         }
+    }
+
+    @Override
+    @Transactional // Đảm bảo các thay đổi được thực hiện trong một transaction
+    public void updateRole(RoleCreateRequest request, int idRole) {
+        // Lấy Role từ DB
+        Role role = roleRepository.findById(idRole)
+                .orElseThrow(() -> new ResourceNotFoundException("Không có role với id: " + idRole));
+
+        // Kiểm tra tên Role có tồn tại hay không
+        if (roleRepository.existsByRoleNameAndIdRoleNot(request.getRoleName(), idRole)) {
+            throw new InvalidInputException("Tên quyền này đã tồn tại: " + request.getRoleName());
+        }
+
+        // Cập nhật các trường cơ bản
+        role.setDescription(request.getDescription());
+        role.setRoleName(request.getRoleName());
+        rolePermissonService.deleteAllRolePermissionByIdRole(idRole);
+
+        // Tạo danh sách RolePermission mới
+        List<RolePermisson> newList = request.getRolePermissionRequests()
+                .stream()
+                .map(rolePermissionRequest -> {
+                    RolePermisson rolePermisson = rolePermissionMapper.toRolePermission(rolePermissionRequest);
+                    Permission permission = permissionService.getPermissionById(rolePermissionRequest.getIdPermission());
+                    rolePermisson.setPermission(permission);
+                    rolePermisson.setRole(role);
+                    return rolePermisson;
+                })
+                .collect(Collectors.toList());
+
+        // Set lại danh sách mới
+        role.setRolePermissonList(newList);
+
+        // Lưu Role, Hibernate sẽ tự động xóa các orphan records và cập nhật danh sách mới
+        roleRepository.save(role);
+    }
+
+    @Override
+    public void deleteRole(int idRole) {
+        roleRepository.findById(idRole)
+                .orElseThrow(() -> new ResourceNotFoundException("Không có role với id: " + idRole));
+        roleRepository.deleteById(idRole);
     }
 }

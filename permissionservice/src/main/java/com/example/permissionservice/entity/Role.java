@@ -24,7 +24,7 @@ public class Role {
     @Column(nullable = false, length = 150)
     private String description;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private List<RolePermisson> rolePermissonList;
 
 }
