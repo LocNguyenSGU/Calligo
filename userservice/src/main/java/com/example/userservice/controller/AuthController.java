@@ -3,6 +3,7 @@ package com.example.userservice.controller;
 import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.exception.UnauthorizedException;
+import com.example.commonservice.model.OKMessage;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.RefreshTokenCreateRequest;
 import com.example.userservice.dto.request.SignUpRequest;
@@ -190,6 +191,22 @@ public class AuthController {
 
     private String getRefreshTokenFromRequest(HttpServletRequest httpServletRequest) {
         String refreshToken = null;
+
+        // Lấy refresh token từ cookie
+        jakarta.servlet.http.Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies != null) {
+            for (jakarta.servlet.http.Cookie cookie : cookies) {
+                if (cookie.getName().equals("refreshToken")) {
+                    refreshToken = cookie.getValue();
+                    System.out.println("refreshToken: " + refreshToken);
+                }
+            }
+        }
+        return refreshToken;
+    }
+    private String getRefreshTokenFromResquest(HttpServletRequest httpServletRequest) {
+        String refreshToken = null;
+        OKMessage okMessage = new OKMessage("ok nef");
 
         // Lấy refresh token từ cookie
         jakarta.servlet.http.Cookie[] cookies = httpServletRequest.getCookies();
