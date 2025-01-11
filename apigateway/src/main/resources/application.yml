@@ -16,7 +16,18 @@ spring:
         - id: userservice
           uri: lb://userservice
           predicates:
-            - Path=/api/v1/**
+            - Path=/api/v1/users/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                redis-rate-limiter.requestedTokens: 1
+            - KeyAuthFilter
+        - id: permissionservice
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/role/**
           filters:
             - name: RequestRateLimiter
               args:
