@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/commonservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/commonservice/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/discoveryservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/friendservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/permissionservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/permissionservice/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/userservice/src/main/java" charset="UTF-8" />
