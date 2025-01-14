@@ -22,9 +22,9 @@ public class FriendRequestController {
         friendRequestService.createFriendRequest(friendRequestCreateRequest);
         return new ResponseEntity<>(new OKMessage(200, "Tao friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
     }
-    @PutMapping("/status")
-    public ResponseEntity<?> createFriendRequest(@Valid @RequestBody FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest) {
-        friendRequestService.updateFriendRequest(friendRequestUpdateStatusRequest);
+    @PutMapping("{idFriendRequest}/status")
+    public ResponseEntity<?> createFriendRequest(@Valid @RequestBody FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest,@PathVariable int idFriendRequest) {
+        friendRequestService.updateFriendRequest(friendRequestUpdateStatusRequest, idFriendRequest);
         return new ResponseEntity<>(new OKMessage(200, "Update status friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
     }
 

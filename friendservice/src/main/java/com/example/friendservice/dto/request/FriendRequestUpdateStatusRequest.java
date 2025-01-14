@@ -13,9 +13,6 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendRequestUpdateStatusRequest {
-    @NotNull(message = "Id friendRequest không được de trong")
-    private int idFriendRequest;
-
     @ValidEnum(enumClass = FriendRequestEnum.class, message = "Invalid action value")
     private String status;
 }

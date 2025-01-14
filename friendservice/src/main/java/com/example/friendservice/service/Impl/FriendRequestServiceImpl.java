@@ -35,8 +35,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     @Override
     @Transactional
-    public void updateFriendRequest(FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest) {
-        int idFriendRequest = friendRequestUpdateStatusRequest.getIdFriendRequest();
+    public void updateFriendRequest(FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest, int idFriendRequest) {
         FriendRequest friendRequest = friendRequestRepository.findById(idFriendRequest).orElseThrow(
                 ()-> new ResourceNotFoundException("Khong co friend request voi id: " + idFriendRequest));
         FriendRequestEnum status = FriendRequestEnum.valueOf(friendRequestUpdateStatusRequest.getStatus());
