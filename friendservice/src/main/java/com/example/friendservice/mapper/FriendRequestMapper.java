@@ -2,6 +2,7 @@ package com.example.friendservice.mapper;
 
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
+import com.example.friendservice.dto.response.FriendRequestResponse;
 import com.example.friendservice.entity.FriendRequest;
 import org.mapstruct.Mapper;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface FriendRequestMapper {
     FriendRequest toFriendRequest(FriendRequestCreateRequest friendRequestCreateRequest);
     FriendRequest toFriendRequest(FriendRequest friendRequest);
+
+    FriendRequestResponse toFriendRequestResponse(FriendRequest friendRequest);
 }
