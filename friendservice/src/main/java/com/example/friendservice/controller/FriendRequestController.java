@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,20 @@ import org.springframework.web.bind.annotation.*;
 public class FriendRequestController {
     @Autowired
     private FriendRequestService friendRequestService;
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
+    private static final String TOPIC = "notifications";  // Kafka topic cho notifications
+
     @PostMapping
     public ResponseEntity<?> createFriendRequest(@Valid @RequestBody FriendRequestCreateRequest friendRequestCreateRequest) {
         friendRequestService.createFriendRequest(friendRequestCreateRequest);
+        // Giả sử người gửi lời mời là sender, người nhận là receiver
+        String message = "Friend request sent from " + friendRequestCreateRequest.getIdAccountSent() + " to " + friendRequestCreateRequest.getIdAccountReceive();
+
+        // Gửi thông báo qua Kafka
+        kafkaTemplate.send(TOPIC, message);
+        System.out.println("Sent friend request notification: " + message);
+
         return new ResponseEntity<>(new OKMessage(200, "Tao friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
     }
     @PutMapping("{idFriendRequest}/status")
