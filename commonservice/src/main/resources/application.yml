@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: commonservice
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${KAFKA_GROUP_ID:default-group}
+      auto-offset-reset: earliest
+    listener:
+      concurrency: 3

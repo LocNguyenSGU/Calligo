@@ -2,6 +2,7 @@ package com.example.friendservice.controller;
 
 import com.example.commonservice.model.OKMessage;
 import com.example.commonservice.model.ResponseDataMessage;
+import com.example.commonservice.service.KafkaService;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
@@ -22,17 +23,14 @@ public class FriendRequestController {
     @Autowired
     private FriendRequestService friendRequestService;
     @Autowired
-    private KafkaTemplate kafkaTemplate;
-    private static final String TOPIC = "notifications";  // Kafka topic cho notifications
+    private KafkaService kafkaService;
 
     @PostMapping
     public ResponseEntity<?> createFriendRequest(@Valid @RequestBody FriendRequestCreateRequest friendRequestCreateRequest) {
         friendRequestService.createFriendRequest(friendRequestCreateRequest);
         // Giả sử người gửi lời mời là sender, người nhận là receiver
         String message = "Friend request sent from " + friendRequestCreateRequest.getIdAccountSent() + " to " + friendRequestCreateRequest.getIdAccountReceive();
-
-        // Gửi thông báo qua Kafka
-        kafkaTemplate.send(TOPIC, message);
+        kafkaService.sendMessage("notifications", message);
         System.out.println("Sent friend request notification: " + message);
 
         return new ResponseEntity<>(new OKMessage(200, "Tao friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
