@@ -32,10 +32,10 @@ public class Account {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-
     @OneToOne(mappedBy = "account")
     private User user;
 
-    @Column(nullable = false)
-    private int idRole;
+    @ManyToOne
+    @JoinColumn(name = "idRole")
+    private Role role;
 }

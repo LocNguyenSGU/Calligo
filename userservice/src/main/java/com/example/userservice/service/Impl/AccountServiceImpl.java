@@ -7,6 +7,7 @@ import com.example.userservice.entity.Account;
 import com.example.userservice.mapper.AccountMapper;
 import com.example.userservice.repository.AccountRepository;
 import com.example.userservice.service.AccountService;
+import com.example.userservice.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private RoleService roleService;
 
     @Override
     public int checkLogin(LoginRequest loginRequest) throws ResourceNotFoundException {
@@ -52,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         account.setCreatedAt(LocalDateTime.now());
         account.setActive(true);
-        account.setIdRole(1); // user
+        account.setRole(roleService.getRoleById(1));
         accountRepository.save(account);
     }
 

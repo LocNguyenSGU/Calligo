@@ -1,7 +1,9 @@
 package com.example.notificationservice.event;
 
+import com.example.commonservice.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class ConsumerEvent {
+    @Autowired
+    private EmailService emailService;
     @RetryableTopic(
             attempts = "4",
             backoff = @Backoff(delay = 1000L, multiplier = 2),
@@ -25,7 +29,8 @@ public class ConsumerEvent {
     public void listen(String message) {
         // Khi nhận được thông báo từ Kafka, in ra message
         System.out.println("Notification received: " + message);
-        throw new RuntimeException("Loi tu tao");
+        emailService.sendEmail("lockbangss@gmail.com", "Microservice Calligo", message);
+//        throw new RuntimeException("Loi tu tao");
     }
     @DltHandler
     void processDltMessage(@Payload String message) {

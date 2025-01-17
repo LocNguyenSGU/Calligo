@@ -28,7 +28,9 @@ public class KeyAuthFilter extends AbstractGatewayFilterFactory<Object> {
 
     @Override
     public GatewayFilter apply(Object config) {
+        System.out.println("00000");
         return (exchange, chain) -> {
+            System.out.println("1121111");
             String requestPath = exchange.getRequest().getURI().getPath();
             System.out.println("Request Path: " + requestPath); // Log đầy đủ path
 

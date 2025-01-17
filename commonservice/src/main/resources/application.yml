@@ -9,3 +9,14 @@ spring:
       auto-offset-reset: earliest
     listener:
       concurrency: 3
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lockbkbang@gmail.com
+    password: ohgx uhlo nbii rlle
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
