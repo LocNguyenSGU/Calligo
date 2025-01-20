@@ -9,8 +9,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="apigateway" />
         <module name="commonservice" />
+        <module name="userservice" />
         <module name="discoveryservice" />
+        <module name="chatservice" />
+        <module name="notificationservice" />
         <module name="Calligo" />
+        <module name="friendservice" />
       </profile>
       <profile name="Annotation profile for friendservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -20,7 +24,6 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
         </processorPath>
-        <module name="friendservice" />
       </profile>
       <profile name="Annotation profile for userservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -31,7 +34,6 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="userservice" />
       </profile>
       <profile name="Annotation profile for chatservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -40,8 +42,6 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="chatservice" />
-        <module name="notificationservice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
