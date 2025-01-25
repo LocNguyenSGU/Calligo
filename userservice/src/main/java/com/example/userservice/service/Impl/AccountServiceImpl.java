@@ -63,4 +63,7 @@ public class AccountServiceImpl implements AccountService {
     public boolean existsAccountByEmail(String email) {
         return accountRepository.existsByEmail(email);
     }
+    public boolean existsAccountByPhoneNumber(String phoneNumber) {
+        return accountRepository.existsByPhoneNumber(phoneNumber);
+    }
 }

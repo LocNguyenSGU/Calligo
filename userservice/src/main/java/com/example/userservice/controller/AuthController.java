@@ -3,6 +3,7 @@ package com.example.userservice.controller;
 import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.exception.UnauthorizedException;
+import com.example.commonservice.model.ErrorObjectMessage;
 import com.example.commonservice.model.OKMessage;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.RefreshTokenCreateRequest;
@@ -33,7 +34,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -85,16 +86,37 @@ public class AuthController {
     }
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if(accountService.existsAccountByEmail(signUpRequest.getEmail())) throw new InvalidInputException("Email da ton tai");
-        if(!signUpRequest.isPasswordEquals()) throw new InvalidInputException("Mat khau nhap lai khong khop");
+        Map<String, String> errorMessages = new HashMap<>();
 
+        // Kiểm tra email
+        if(accountService.existsAccountByEmail(signUpRequest.getEmail())) {
+            errorMessages.put("email", "Email đã tồn tại");
+        }
+
+        // Kiểm tra số điện thoại
+        if(accountService.existsAccountByPhoneNumber(signUpRequest.getPhoneNumber())) {
+            errorMessages.put("phoneNumber", "Số điện thoại đã tồn tại");
+        }
+
+        // Kiểm tra mật khẩu và RePassword
+        if(!signUpRequest.isPasswordEquals()) {
+            errorMessages.put("password", "Mật khẩu nhập lại không khớp");
+        }
+
+        // Nếu có lỗi, trả về tất cả lỗi
+        if(!errorMessages.isEmpty()) {
+            return new ResponseEntity<>(new ErrorObjectMessage(400, errorMessages, "Đã xảy ra lỗi khi tạo tài khoản", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+
+        // Nếu không có lỗi, tiếp tục tạo tài khoản
         accountService.createAccount(signUpRequest);
         ResponseData responseData = new ResponseData();
         responseData.setCode(200);
-        responseData.setMessage("Tao tai khoan thanh cong");
+        responseData.setMessage("Tạo tài khoản thành công");
         responseData.setStatus(HttpStatus.OK);
         responseData.setData("");
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
+
+        return new ResponseEntity<>(new OKMessage(200, "Tạo tài khoản thành công", HttpStatus.OK), HttpStatus.OK);
     }
 
     @PostMapping("/validate-token")

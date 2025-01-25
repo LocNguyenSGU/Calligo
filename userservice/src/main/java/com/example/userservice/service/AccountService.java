@@ -13,5 +13,6 @@ public interface AccountService {
 
     void createAccount(SignUpRequest signUpRequest);
     boolean existsAccountByEmail(String email);
+    boolean existsAccountByPhoneNumber(String phoneNumber);
 
 }

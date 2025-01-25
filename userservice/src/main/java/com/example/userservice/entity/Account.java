@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,12 +29,24 @@ public class Account {
     @Column(nullable = false)
     private boolean isActive;
 
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(length = 10)
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(length = 255)
+    private String address;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @OneToOne(mappedBy = "account")
-    private User user;
 
     @ManyToOne
     @JoinColumn(name = "idRole")

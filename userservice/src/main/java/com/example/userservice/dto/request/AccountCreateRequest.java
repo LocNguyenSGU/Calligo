@@ -1,6 +1,5 @@
 package com.example.userservice.dto.request;
 
-import com.example.userservice.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
