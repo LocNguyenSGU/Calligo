@@ -8,6 +8,8 @@ import com.example.commonservice.model.OKMessage;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.RefreshTokenCreateRequest;
 import com.example.userservice.dto.request.SignUpRequest;
+import com.example.userservice.dto.response.AccountResponse;
+import com.example.userservice.dto.response.HeaderPayload;
 import com.example.userservice.dto.response.ResponseData;
 import com.example.userservice.security.JwtTokenProvider;
 import com.example.userservice.service.AccountService;
@@ -37,7 +39,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/user-requests/auth")
 @Tag(name = "API auth", description = "Api for auth")
 public class AuthController {
     @Autowired
@@ -62,7 +64,9 @@ public class AuthController {
         if (checkLogin == 0) throw  new UnauthorizedException("Sai thông tin đăng nhập " + loginRequest.getEmail());
 
         // Nếu đăng nhập thành công, tạo accessToken và refreshToken
-        String accessToken = jwtTokenProvider.generateToken(loginRequest.getEmail());
+        AccountResponse accountResponse = accountService.getAccountResponseByEmail(loginRequest.getEmail());
+        HeaderPayload headerPayload = new HeaderPayload(accountResponse.getEmail(), accountResponse.getRole());
+        String accessToken = jwtTokenProvider.generateToken(headerPayload);
         String refreshToken = jwtTokenProvider.generateRefreshToken(loginRequest.getEmail());
 
         // Tạo RefreshTokenCreateRequest với LocalDateTime
@@ -164,9 +168,10 @@ public class AuthController {
             if (!isRefreshTokenValid) {
                 throw new UnauthorizedException("Refresh token không tồn tại trong hệ thống");
             }
-
-            // Tạo accessToken mới
-            String newAccessToken = jwtTokenProvider.generateToken(email);
+            // Nếu đăng nhập thành công, tạo accessToken và refreshToken
+            AccountResponse accountResponse = accountService.getAccountResponseByEmail(email);
+            HeaderPayload headerPayload = new HeaderPayload(accountResponse.getEmail(), accountResponse.getRole());
+            String newAccessToken = jwtTokenProvider.generateToken(headerPayload);
 
             // Tạo ResponseData chứa accessToken mới
             ResponseData responseData = new ResponseData(200, "Cấp lại access token thành công", newAccessToken, HttpStatus.OK);
@@ -242,4 +247,5 @@ public class AuthController {
         }
         return refreshToken;
     }
+
 }

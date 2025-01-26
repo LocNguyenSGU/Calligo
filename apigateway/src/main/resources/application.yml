@@ -16,7 +16,7 @@ spring:
         - id: userservice
           uri: lb://userservice
           predicates:
-            - Path=/api/v1/**
+            - Path=/api/v1/user-requests/**
           filters:
             - name: RequestRateLimiter
               args:
@@ -50,3 +50,8 @@ logging:
     root: INFO
     org.springframework.cloud.gateway: DEBUG
     org.springframework.cloud.loadbalancer: DEBUG
+# Cau hinh JWT
+jwt:
+  secret: 6d9a269ae108eda9f5a28284e86f203d0a3e6ddffadc5a84784d57e99679df3a
+  expirationtime: 900000
+  expirationrefreshtime: 604800000

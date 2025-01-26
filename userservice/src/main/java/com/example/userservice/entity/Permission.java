@@ -19,7 +19,7 @@ public class Permission {
     @Column(nullable = false, length = 60)
     private String permissionName;
 
-    @OneToMany(mappedBy = "permission")
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RolePermisson> rolePermissonList;
 
 }

@@ -3,6 +3,7 @@ package com.example.userservice.service.Impl;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.SignUpRequest;
+import com.example.userservice.dto.response.AccountResponse;
 import com.example.userservice.entity.Account;
 import com.example.userservice.mapper.AccountMapper;
 import com.example.userservice.repository.AccountRepository;
@@ -47,6 +48,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Optional<Account> getAccountByEmail(String email) {
         return accountRepository.findByEmail(email);
+    }
+
+    @Override
+    public AccountResponse getAccountResponseByEmail(String email) {
+        Account account = accountRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("Khong co account voi email: " + email));
+        AccountResponse accountResponse = accountMapper.toAccountResponse(account);
+        return accountResponse;
     }
 
     @Override

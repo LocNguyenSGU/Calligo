@@ -16,7 +16,7 @@ public class RolePermisson {
    private int idRolePermisson;
 
    @ManyToOne
-   @JoinColumn(name = "idQuyen")
+   @JoinColumn(name = "idRole")
    private Role role;
 
    @ManyToOne

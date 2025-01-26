@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RolePermissionResponse {
-    private int idRole;
     private int idPermission;
+    private String permissionName;
     private RolePermissionEnum action;
 }

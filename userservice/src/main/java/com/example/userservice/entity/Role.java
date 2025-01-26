@@ -22,7 +22,7 @@ public class Role {
     @Column(nullable = false, length = 150)
     private String description;
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RolePermisson> rolePermissonList;
 
     @OneToMany(mappedBy = "role")

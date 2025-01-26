@@ -44,6 +44,8 @@ public class Account {
     @Column(length = 255)
     private String address;
 
+    private String imgAvatar;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

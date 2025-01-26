@@ -1,5 +1,6 @@
 package com.example.userservice.security;
 
+import com.example.userservice.dto.response.HeaderPayload;
 import com.example.userservice.service.BlacklistTokenService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -29,11 +30,12 @@ public class JwtTokenProvider {
     private BlacklistTokenService blacklistTokenService;
 
     // Tạo JWT từ username
-    public String generateToken(String data) { // access token
+    public String generateToken(HeaderPayload headerPayload) { // access token
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         // Tạo ID cho token
         String jws = Jwts.builder()
-                .setSubject(data)
+                .setSubject(headerPayload.getEmail())
+                .claim("role", headerPayload.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwt_expiration))
                 .signWith(key)
