@@ -22,7 +22,7 @@ public class AuthServiceImpl implements AuthService {
 
         return webClientBuilder.build()
                 .post()
-                .uri("lb://userservice/api/v1/user-requests/auth/validate-token")
+                .uri("lb://userservice/api/v1/user-service/auth/validate-token")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .onStatus(

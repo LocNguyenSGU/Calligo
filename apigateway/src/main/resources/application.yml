@@ -16,7 +16,7 @@ spring:
         - id: userservice
           uri: lb://userservice
           predicates:
-            - Path=/api/v1/user-requests/**
+            - Path=/api/v1/user-service/**
           filters:
             - name: RequestRateLimiter
               args:
@@ -27,7 +27,7 @@ spring:
         - id: friendservice
           uri: lb://friendservice
           predicates:
-            - Path=/api/v1/friend-requests/**
+            - Path=/api/v1/friend-service/**
           filters:
             - name: RequestRateLimiter
               args:

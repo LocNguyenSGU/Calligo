@@ -39,7 +39,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/v1/user-requests/auth")
+@RequestMapping("/api/v1/user-service/auth")
 @Tag(name = "API auth", description = "Api for auth")
 public class AuthController {
     @Autowired

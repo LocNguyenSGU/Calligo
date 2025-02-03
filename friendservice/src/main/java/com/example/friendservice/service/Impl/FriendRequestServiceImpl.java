@@ -47,10 +47,15 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         if(friendRequest.getStatus().equals(FriendRequestEnum.ACCEPTED) && !status.equals(FriendRequestEnum.ACCEPTED)) {
             throw new InvalidInputException("Khong the cap nhat trang thai khi status ban dau cua friend request id: " + idFriendRequest + " da la ACCEPTED");
         }
-        friendRequest.setStatus(status);
         if(!friendRequest.getStatus().equals(FriendRequestEnum.ACCEPTED) && status.equals(FriendRequestEnum.ACCEPTED)) {
+            System.out.println("Trang thai cu: " + friendRequest.getStatus());
+            System.out.println("Trang thai moi: " + status);
+            System.out.println("Cap nhat trang thai va luu");
             friendService.createFriendService(friendRequest);
+        } else {
+            System.out.println("Khong cap nhat trang tahi");
         }
+        friendRequest.setStatus(status);
         friendRequestRepository.save(friendRequest);
     }
 
