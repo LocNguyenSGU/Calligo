@@ -10,5 +10,5 @@ import org.springframework.data.domain.Page;
 public interface FriendService {
     void createFriendService(FriendRequest friendRequest);
 
-    Page<FriendResponse> getAllFriendByIdAccount(int idAccount, int page, int size, String sortDirection);
+    Page<FriendResponse> getAllFriendByIdAccount(int idAccount, String name, int page, int size, String sortDirection);
 }

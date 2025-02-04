@@ -20,11 +20,20 @@ public class FriendController {
             @PathVariable int idAccount,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
-        Page<FriendResponse> responses = friendService.getAllFriendByIdAccount(
-                idAccount, page, size, sortDirection);
-        return new ResponseEntity<>(
-                new ResponseDataMessage(200, "Lay danh sach ban be thanh cong", responses, HttpStatus.OK)
-                , HttpStatus.OK);
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(defaultValue = "") String name) { // Đặt mặc định cho `name`
+
+        // Chỉ chấp nhận "asc" hoặc "desc" cho sortDirection
+        if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
+            return ResponseEntity.badRequest().body(new ResponseDataMessage(400, "sortDirection phải là 'asc' hoặc 'desc'", null, HttpStatus.BAD_REQUEST));
+        }
+
+        Page<FriendResponse> responses = friendService.getAllFriendByIdAccount(idAccount, name, page, size, sortDirection);
+
+        if (responses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có bạn bè nào phù hợp", null, HttpStatus.NO_CONTENT));
+        }
+
+        return ResponseEntity.ok(new ResponseDataMessage(200, "Lấy danh sách bạn bè thành công", responses, HttpStatus.OK));
     }
 }

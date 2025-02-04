@@ -10,5 +10,5 @@ public interface FriendRequestService {
     void createFriendRequest(FriendRequestCreateRequest friendRequestCreateRequest);
     void updateFriendRequest(FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest, int idFriendRequest);
 
-    Page<FriendRequestResponse> getFriendRequestsByIdAccount(int idAccountReceive, int page, int size, String sortDirection);
+    Page<FriendRequestResponse> getFriendRequestsByIdAccountAndName(int idAccountReceive, String name, int page, int size, String sortDirection);
 }

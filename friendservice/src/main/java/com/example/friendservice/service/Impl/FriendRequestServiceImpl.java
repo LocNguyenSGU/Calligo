@@ -60,13 +60,13 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public Page<FriendRequestResponse> getFriendRequestsByIdAccount(int idAccountReceive, int page, int size, String sortDirection) {
+    public Page<FriendRequestResponse> getFriendRequestsByIdAccountAndName(int idAccountReceive, String name, int page, int size, String sortDirection) {
         Sort sort = "asc".equalsIgnoreCase(sortDirection)
                 ? Sort.by("timeRequest").ascending()
                 : Sort.by("timeRequest").descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<FriendRequest> friendRequestPage = friendRequestRepository.findAllByIdAccountReceiveAndNotStatusAccepted(idAccountReceive, pageable);
+        Page<FriendRequest> friendRequestPage = friendRequestRepository.findAllByIdAccountReceiveAndNotStatusAccepted(idAccountReceive, name, pageable);
 
         return friendRequestPage.map(friendRequestMapper::toFriendRequestResponse);
     }

@@ -29,4 +29,9 @@ public class AccountController {
         AccountResponse accountResponse = accountService.getAccountResponseByEmail(email);
         return new ResponseEntity<>(new ResponseDataMessage("Lay thong tin account", accountResponse), HttpStatus.OK);
     }
+    @GetMapping("/phone/{phone}")
+    public ResponseEntity<?> getInfoAccountByPhone(@PathVariable String phone) {
+        AccountResponse accountResponse = accountService.getAccountResponseByPhone(phone);
+        return new ResponseEntity<>(new ResponseDataMessage("Lay thong tin account", accountResponse), HttpStatus.OK);
+    }
 }

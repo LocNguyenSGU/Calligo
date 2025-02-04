@@ -12,6 +12,7 @@ public interface AccountService {
     Optional<Account> getAccountByIdAccount(int idAccount);
     Optional<Account> getAccountByEmail(String email);
     AccountResponse getAccountResponseByEmail(String email);
+    AccountResponse getAccountResponseByPhone(String phone);
     void createAccount(SignUpRequest signUpRequest);
     boolean existsAccountByEmail(String email);
     boolean existsAccountByPhoneNumber(String phoneNumber);

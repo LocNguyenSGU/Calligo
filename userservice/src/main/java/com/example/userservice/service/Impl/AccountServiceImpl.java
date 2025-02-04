@@ -59,6 +59,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountResponse getAccountResponseByPhone(String phone) {
+        Account account = accountRepository.findByPhoneNumber(phone).orElseThrow(
+                () -> new ResourceNotFoundException("Khong co account voi phone: " + phone));
+        AccountResponse accountResponse = accountMapper.toAccountResponse(account);
+        return accountResponse;
+    }
+
+    @Override
     public void createAccount(SignUpRequest signUpRequest) {
         Account account = accountMapper.toAccount(signUpRequest);
         account.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));

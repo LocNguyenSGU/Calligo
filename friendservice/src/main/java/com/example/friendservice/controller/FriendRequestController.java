@@ -46,9 +46,10 @@ public class FriendRequestController {
             @PathVariable int idAccountReceive,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
-        Page<FriendRequestResponse> responses = friendRequestService.getFriendRequestsByIdAccount(
-                idAccountReceive, page, size, sortDirection);
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(defaultValue = "") String name)   {
+        Page<FriendRequestResponse> responses = friendRequestService.getFriendRequestsByIdAccountAndName(
+                idAccountReceive, name, page, size, sortDirection);
         return new ResponseEntity<>(
                 new ResponseDataMessage(200, "Lay danh sach loi moi ket ban thanh cong", responses, HttpStatus.OK)
                 , HttpStatus.OK);
