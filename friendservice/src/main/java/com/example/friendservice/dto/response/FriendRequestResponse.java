@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendRequestResponse {
+    private int idFriendRequest;
     private int idAccountSent;
     private String pathAvartar;
     private String firstName;

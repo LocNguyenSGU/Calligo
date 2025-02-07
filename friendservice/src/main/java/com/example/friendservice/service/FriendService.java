@@ -11,4 +11,5 @@ public interface FriendService {
     void createFriendService(FriendRequest friendRequest);
 
     Page<FriendResponse> getAllFriendByIdAccount(int idAccount, String name, int page, int size, String sortDirection);
+    public boolean areFriends(int idAccountSource, int idAccountTarget);
 }

@@ -1,6 +1,7 @@
 package com.example.userservice.mapper;
 
 import com.example.userservice.dto.request.SignUpRequest;
+import com.example.userservice.dto.response.AccountBasicResponse;
 import com.example.userservice.dto.response.AccountResponse;
 import com.example.userservice.dto.response.RolePermissionResponse;
 import com.example.userservice.dto.response.RoleResponse;
@@ -60,5 +61,7 @@ public interface AccountMapper {
 
         return accountResponse;
     }
+
+    AccountBasicResponse toAccountBasicResponse(Account account);
 
 }

@@ -3,6 +3,7 @@ package com.example.friendservice.controller;
 import com.example.commonservice.model.ResponseDataMessage;
 import com.example.friendservice.dto.response.FriendRequestResponse;
 import com.example.friendservice.dto.response.FriendResponse;
+import com.example.friendservice.dto.response.FriendshipResponse;
 import com.example.friendservice.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,5 +36,19 @@ public class FriendController {
         }
 
         return ResponseEntity.ok(new ResponseDataMessage(200, "Lấy danh sách bạn bè thành công", responses, HttpStatus.OK));
+    }
+
+    @GetMapping("/check-relationship/idAccountSource/{idAccountSource}/idAccountTarget/{idAccountTarget}")
+    public ResponseEntity<?> getFriendByIdAccount(
+            @PathVariable int idAccountSource,
+            @PathVariable int idAccountTarget) {
+        FriendshipResponse friendshipResponse = new FriendshipResponse();
+
+        if(friendService.areFriends(idAccountSource, idAccountTarget)) {
+            friendshipResponse.setAreFriends(true);
+        } else {
+            friendshipResponse.setAreFriends(false);
+        }
+        return ResponseEntity.ok(new ResponseDataMessage(200, "Kiem tra co phan ban be khong", friendshipResponse, HttpStatus.OK));
     }
 }

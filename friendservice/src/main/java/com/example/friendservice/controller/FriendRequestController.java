@@ -6,6 +6,7 @@ import com.example.commonservice.service.KafkaService;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
+import com.example.friendservice.dto.response.FriendResponse;
 import com.example.friendservice.service.FriendRequestService;
 import com.example.friendservice.service.FriendService;
 import jakarta.validation.Valid;
@@ -50,6 +51,14 @@ public class FriendRequestController {
             @RequestParam(defaultValue = "") String name)   {
         Page<FriendRequestResponse> responses = friendRequestService.getFriendRequestsByIdAccountAndName(
                 idAccountReceive, name, page, size, sortDirection);
+        // Chỉ chấp nhận "asc" hoặc "desc" cho sortDirection
+        if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
+            return ResponseEntity.badRequest().body(new ResponseDataMessage(400, "sortDirection phải là 'asc' hoặc 'desc'", null, HttpStatus.BAD_REQUEST));
+        }
+
+        if (responses.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có danh sách lời mời kết bạn nào phù hợp", null, HttpStatus.NO_CONTENT));
+        }
         return new ResponseEntity<>(
                 new ResponseDataMessage(200, "Lay danh sach loi moi ket ban thanh cong", responses, HttpStatus.OK)
                 , HttpStatus.OK);

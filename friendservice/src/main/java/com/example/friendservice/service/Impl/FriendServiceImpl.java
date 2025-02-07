@@ -43,4 +43,9 @@ public class FriendServiceImpl implements FriendService {
 
         return friendPage.map(friendMapper::toFriendResponse);
     }
+
+    @Override
+    public boolean areFriends(int idAccountSource, int idAccountTarget) {
+        return friendRepository.countFriendship(idAccountSource, idAccountTarget) > 0;
+    }
 }

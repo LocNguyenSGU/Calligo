@@ -1,6 +1,7 @@
 package com.example.userservice.controller;
 
 import com.example.commonservice.model.ResponseDataMessage;
+import com.example.userservice.dto.response.AccountBasicResponse;
 import com.example.userservice.dto.response.AccountResponse;
 import com.example.userservice.security.JwtTokenProvider;
 import com.example.userservice.service.AccountService;
@@ -33,5 +34,10 @@ public class AccountController {
     public ResponseEntity<?> getInfoAccountByPhone(@PathVariable String phone) {
         AccountResponse accountResponse = accountService.getAccountResponseByPhone(phone);
         return new ResponseEntity<>(new ResponseDataMessage("Lay thong tin account", accountResponse), HttpStatus.OK);
+    }
+    @GetMapping("/basic/phone/{phone}")
+    public ResponseEntity<?> getInfoAccountBasicByPhone(@PathVariable String phone) {
+        AccountBasicResponse accountBasicResponse = accountService.getAccountBasicResponseByPhone(phone);
+        return new ResponseEntity<>(new ResponseDataMessage("Lay thong tin account basic", accountBasicResponse), HttpStatus.OK);
     }
 }

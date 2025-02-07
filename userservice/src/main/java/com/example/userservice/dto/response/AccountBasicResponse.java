@@ -5,17 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountResponse {
+public class AccountBasicResponse {
     private int idAccount;
-    private String email;
     private String firstName;
     private String lastName;
-    private String phoneNumber;
-    private LocalDate dateOfBirth;
-    private String address;
     private String imgAvatar;
-    private RoleResponse role;
 }
