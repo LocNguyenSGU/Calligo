@@ -43,12 +43,16 @@ public class FriendController {
             @PathVariable int idAccountSource,
             @PathVariable int idAccountTarget) {
         FriendshipResponse friendshipResponse = new FriendshipResponse();
-
+        friendshipResponse.setYourself(false);
+        if(idAccountTarget == idAccountSource) {
+            friendshipResponse.setYourself(true);
+        }
         if(friendService.areFriends(idAccountSource, idAccountTarget)) {
             friendshipResponse.setAreFriends(true);
         } else {
             friendshipResponse.setAreFriends(false);
         }
+
         return ResponseEntity.ok(new ResponseDataMessage(200, "Kiem tra co phan ban be khong", friendshipResponse, HttpStatus.OK));
     }
 }
