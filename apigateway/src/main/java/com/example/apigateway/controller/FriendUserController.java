@@ -29,12 +29,11 @@ public class FriendUserController {
         this.webClientBuilder = webClientBuilder;
     }
 
-    @GetMapping("/phone/{phone}/idAccountSource/{idAccountSource}/idAccountTarget/{idAccountTarget}")
+    @GetMapping("/phone/{phone}/idAccountSource/{idAccountSource}")
     public Mono<ResponseDataMessage> getMergedData(
             @PathVariable String phone,
-            @PathVariable String idAccountSource,
-            @PathVariable String idAccountTarget) {
-        return accountFriendService.fetchAndMergeData(phone, idAccountSource, idAccountTarget)
+            @PathVariable String idAccountSource) {
+        return accountFriendService.fetchAndMergeData(phone, idAccountSource)
                 .map(data -> new ResponseDataMessage("Info basic user to friendship", data));
     }
 

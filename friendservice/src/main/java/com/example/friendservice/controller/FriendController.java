@@ -39,7 +39,7 @@ public class FriendController {
     }
 
     @GetMapping("/check-relationship/idAccountSource/{idAccountSource}/idAccountTarget/{idAccountTarget}")
-    public ResponseEntity<?> getFriendByIdAccount(
+    public ResponseEntity<?> checkFriendshipByIdAccount(
             @PathVariable int idAccountSource,
             @PathVariable int idAccountTarget) {
         FriendshipResponse friendshipResponse = new FriendshipResponse();

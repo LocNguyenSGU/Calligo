@@ -1,10 +1,8 @@
 package com.example.userservice.mapper;
 
 import com.example.userservice.dto.request.SignUpRequest;
-import com.example.userservice.dto.response.AccountBasicResponse;
-import com.example.userservice.dto.response.AccountResponse;
-import com.example.userservice.dto.response.RolePermissionResponse;
-import com.example.userservice.dto.response.RoleResponse;
+import com.example.userservice.dto.response.*;
+import com.example.userservice.dto.response.FriendService.FriendshipResponse;
 import com.example.userservice.entity.Account;
 import com.example.userservice.entity.Role;
 import org.mapstruct.Mapper;
@@ -63,5 +61,10 @@ public interface AccountMapper {
     }
 
     AccountBasicResponse toAccountBasicResponse(Account account);
+    @Mapping(source = "accountBasicResponse", target = "accountBasicResponse")
+    @Mapping(source = "friendshipResponse", target = "friendshipResponse")
+    AccountRelationResponse toAccountRelationResponse(AccountBasicResponse accountBasicResponse, FriendshipResponse friendshipResponse);
+
+
 
 }
