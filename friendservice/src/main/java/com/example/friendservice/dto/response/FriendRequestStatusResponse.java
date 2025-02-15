@@ -1,5 +1,6 @@
 package com.example.friendservice.dto.response;
 
+import com.example.friendservice.eenum.FriendRequestEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FriendshipResponse {
-    private boolean areFriends;
-    private boolean isYourself;
-    private String note;
+public class FriendRequestStatusResponse {
+    private int idFriendRequest;
+    private FriendRequestEnum status;
 }

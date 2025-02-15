@@ -6,7 +6,9 @@ import com.example.commonservice.service.KafkaService;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
+import com.example.friendservice.dto.response.FriendRequestStatusResponse;
 import com.example.friendservice.dto.response.FriendResponse;
+import com.example.friendservice.eenum.FriendRequestEnum;
 import com.example.friendservice.service.FriendRequestService;
 import com.example.friendservice.service.FriendService;
 import jakarta.validation.Valid;
@@ -28,22 +30,22 @@ public class FriendRequestController {
 
     @PostMapping
     public ResponseEntity<?> createFriendRequest(@Valid @RequestBody FriendRequestCreateRequest friendRequestCreateRequest) {
-        friendRequestService.createFriendRequest(friendRequestCreateRequest);
+        int idFriendRequested = friendRequestService.createFriendRequest(friendRequestCreateRequest);
         // Giả sử người gửi lời mời là sender, người nhận là receiver
         String message = "Friend request sent from " + friendRequestCreateRequest.getIdAccountSent() + " to " + friendRequestCreateRequest.getIdAccountReceive();
         kafkaService.sendMessage("notifications", message);
         System.out.println("Sent friend request notification: " + message);
 
-        return new ResponseEntity<>(new OKMessage(200, "Tao friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDataMessage("Tao friend request thanh cong", idFriendRequested), HttpStatus.OK);
     }
     @PutMapping("{idFriendRequest}/status")
-    public ResponseEntity<?> createFriendRequest(@Valid @RequestBody FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest,@PathVariable int idFriendRequest) {
+    public ResponseEntity<?> updateFriendRequest(@Valid @RequestBody FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest,@PathVariable int idFriendRequest) {
         friendRequestService.updateFriendRequest(friendRequestUpdateStatusRequest, idFriendRequest);
         return new ResponseEntity<>(new OKMessage(200, "Update status friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
     }
 
     @GetMapping("/account-receive/{idAccountReceive}")
-    public ResponseEntity<?> getFriendRequestsByIdAccount(
+    public ResponseEntity<?> getFriendRequestsByIdAccountReceive(
             @PathVariable int idAccountReceive,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -63,5 +65,19 @@ public class FriendRequestController {
                 new ResponseDataMessage(200, "Lay danh sach loi moi ket ban thanh cong", responses, HttpStatus.OK)
                 , HttpStatus.OK);
     }
+
+    @GetMapping("/status/idAccountSent/{idAccountSent}/idAccountReceive/{idAccountReceive}")
+    public ResponseEntity<?> getFriendRequestStatus(@PathVariable int idAccountSent,
+                                                    @PathVariable int idAccountReceive) {
+        FriendRequestStatusResponse friendRequestStatusResponse = friendRequestService.getStatusFriendRequestBetweenTwoIdccount(idAccountSent, idAccountReceive);
+        if (friendRequestStatusResponse != null) {
+            return ResponseEntity.ok(new ResponseDataMessage("Lay status giua 2 tai khoan", friendRequestStatusResponse));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No friend request found");
+        }
+    }
+
+
+
 
 }

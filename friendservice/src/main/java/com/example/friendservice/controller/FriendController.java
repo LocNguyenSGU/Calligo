@@ -1,9 +1,13 @@
 package com.example.friendservice.controller;
 
+import com.example.commonservice.exception.ResourceNotFoundException;
+import com.example.commonservice.model.OKMessage;
 import com.example.commonservice.model.ResponseDataMessage;
 import com.example.friendservice.dto.response.FriendRequestResponse;
 import com.example.friendservice.dto.response.FriendResponse;
 import com.example.friendservice.dto.response.FriendshipResponse;
+import com.example.friendservice.eenum.FriendRequestEnum;
+import com.example.friendservice.service.FriendRequestService;
 import com.example.friendservice.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class FriendController {
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private FriendRequestService friendRequestService;
     @GetMapping("/idAccount/{idAccount}")
     public ResponseEntity<?> getFriendByIdAccount(
             @PathVariable int idAccount,
@@ -43,6 +49,7 @@ public class FriendController {
             @PathVariable int idAccountSource,
             @PathVariable int idAccountTarget) {
         FriendshipResponse friendshipResponse = new FriendshipResponse();
+        friendshipResponse.setNote(friendRequestService.getNote(idAccountSource, idAccountTarget));
         friendshipResponse.setYourself(false);
         if(idAccountTarget == idAccountSource) {
             friendshipResponse.setYourself(true);
@@ -54,5 +61,18 @@ public class FriendController {
         }
 
         return ResponseEntity.ok(new ResponseDataMessage(200, "Kiem tra co phan ban be khong", friendshipResponse, HttpStatus.OK));
+    }
+    @DeleteMapping("/{idFriend}")
+    public ResponseEntity<?> deleteFriend(@PathVariable int idFriend) {
+        try {
+            friendService.deleteFriend(idFriend);
+            return ResponseEntity.ok(new OKMessage("Xóa bạn bè thành công"));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new OKMessage(404, e.getMessage(), HttpStatus.NOT_FOUND));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new OKMessage(500, "Xóa bạn bè thất bại", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
     }
 }

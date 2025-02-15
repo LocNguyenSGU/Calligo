@@ -1,8 +1,10 @@
 package com.example.friendservice.service.Impl;
 
+import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.friendservice.dto.request.FriendCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.response.FriendResponse;
+import com.example.friendservice.eenum.FriendRequestEnum;
 import com.example.friendservice.entity.Friend;
 import com.example.friendservice.entity.FriendRequest;
 import com.example.friendservice.mapper.FriendMapper;
@@ -30,6 +32,7 @@ public class FriendServiceImpl implements FriendService {
     public void createFriendService(FriendRequest friendRequest) {
         Friend friend = friendMapper.toFriend(friendRequest);
         friend.setTimeCreate(LocalDateTime.now());
+        friend.setFriendRequest(friendRequest);
         friendRepository.save(friend);
     }
 
@@ -47,5 +50,17 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public boolean areFriends(int idAccountSource, int idAccountTarget) {
         return friendRepository.countFriendship(idAccountSource, idAccountTarget) > 0;
+    }
+
+    @Override
+    public void deleteFriend(int idFriend) {
+        if (!friendRepository.existsById(idFriend)) {
+            throw new ResourceNotFoundException("Không có friend với id: " + idFriend);
+        }
+        try {
+            friendRepository.deleteById(idFriend);
+        } catch (Exception e) {
+            throw new RuntimeException("Xóa bạn bè thất bại, vui lòng thử lại!");
+        }
     }
 }

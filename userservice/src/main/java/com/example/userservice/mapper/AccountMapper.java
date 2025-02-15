@@ -23,6 +23,7 @@ public interface AccountMapper {
 
         // Ánh xạ các trường từ Account sang AccountResponse
         AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setIdAccount(account.getIdAccount());
         accountResponse.setEmail(account.getEmail());
         accountResponse.setFirstName(account.getFirstName());
         accountResponse.setLastName(account.getLastName());

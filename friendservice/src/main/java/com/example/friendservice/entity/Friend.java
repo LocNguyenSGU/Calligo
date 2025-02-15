@@ -31,4 +31,8 @@ public class Friend {
     private int idAccountReceive;
     @NotNull
     private LocalDateTime timeCreate;
+
+    @JoinColumn(name="idFriendRequest")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private FriendRequest friendRequest;
 }
