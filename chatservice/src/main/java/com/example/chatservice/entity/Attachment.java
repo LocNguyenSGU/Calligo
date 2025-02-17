@@ -1,23 +1,30 @@
 package com.example.chatservice.entity;
 
-import com.example.chatservice.eenum.MessageType;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
+@Document(collection = "attachments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "attachemnts")
 public class Attachment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idConversation;
-    @ManyToOne
-    @JoinColumn(name = "idMesage")
-    private Message message;
-    private MessageType messageType;
+    private String idAttachment;
+    private String idMessage;
+    private String idConversation;
+    private String type;
     private String url;
+    private String size;
+    private LocalDateTime timeUpload;
+    private MetaData metaData;
+
+    public static class MetaData {
+        private int width;
+        private int height;
+    }
 }
