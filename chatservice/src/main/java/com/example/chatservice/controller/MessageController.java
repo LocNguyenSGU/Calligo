@@ -3,6 +3,7 @@ package com.example.chatservice.controller;
 import com.example.chatservice.entity.Message;
 import com.example.chatservice.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class MessageController {
     private MessageService messageService;
 
     @GetMapping("/{idConversation}")
+    @SendTo("/topic/conversation/{idConversation}")
     public List<Message> getMessages(@PathVariable String idConversation) {
         return messageService.getMessagesByConversation(idConversation);
     }

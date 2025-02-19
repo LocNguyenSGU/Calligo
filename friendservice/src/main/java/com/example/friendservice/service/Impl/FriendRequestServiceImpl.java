@@ -2,6 +2,7 @@ package com.example.friendservice.service.Impl;
 
 import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
+import com.example.commonservice.model.PageResponse;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
@@ -62,7 +63,7 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
-    public Page<FriendRequestResponse> getFriendRequestsByIdAccountAndName(int idAccountReceive, String name, int page, int size, String sortDirection) {
+    public PageResponse<FriendRequestResponse> getFriendRequestsByIdAccountAndName(int idAccountReceive, String name, int page, int size, String sortDirection) {
         Sort sort = "asc".equalsIgnoreCase(sortDirection)
                 ? Sort.by("timeRequest").ascending()
                 : Sort.by("timeRequest").descending();
@@ -70,8 +71,9 @@ public class FriendRequestServiceImpl implements FriendRequestService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<FriendRequest> friendRequestPage = friendRequestRepository.
                 findAllByIdAccountReceiveAndNotStatusAccepted(idAccountReceive, name, pageable);
+        Page<FriendRequestResponse> pageResponse = friendRequestPage.map(friendRequestMapper::toFriendRequestResponse);
 
-        return friendRequestPage.map(friendRequestMapper::toFriendRequestResponse);
+        return new PageResponse<>(pageResponse);
     }
 
     @Override

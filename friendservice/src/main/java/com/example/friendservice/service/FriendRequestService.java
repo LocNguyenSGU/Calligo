@@ -1,5 +1,6 @@
 package com.example.friendservice.service;
 
+import com.example.commonservice.model.PageResponse;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
@@ -12,7 +13,7 @@ public interface FriendRequestService {
     int createFriendRequest(FriendRequestCreateRequest friendRequestCreateRequest);
     void updateFriendRequest(FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest, int idFriendRequest);
 
-    Page<FriendRequestResponse> getFriendRequestsByIdAccountAndName(int idAccountReceive, String name, int page, int size, String sortDirection);
+    PageResponse<FriendRequestResponse> getFriendRequestsByIdAccountAndName(int idAccountReceive, String name, int page, int size, String sortDirection);
 
     FriendRequestStatusResponse getStatusFriendRequestBetweenTwoIdccount(int idAccountSource, int idAccountTarget);
 

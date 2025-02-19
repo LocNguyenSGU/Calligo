@@ -1,6 +1,7 @@
 package com.example.friendservice.controller;
 
 import com.example.commonservice.model.OKMessage;
+import com.example.commonservice.model.PageResponse;
 import com.example.commonservice.model.ResponseDataMessage;
 import com.example.commonservice.service.KafkaService;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
@@ -51,14 +52,14 @@ public class FriendRequestController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "desc") String sortDirection,
             @RequestParam(defaultValue = "") String name)   {
-        Page<FriendRequestResponse> responses = friendRequestService.getFriendRequestsByIdAccountAndName(
+        PageResponse<FriendRequestResponse> responses = friendRequestService.getFriendRequestsByIdAccountAndName(
                 idAccountReceive, name, page, size, sortDirection);
         // Chỉ chấp nhận "asc" hoặc "desc" cho sortDirection
         if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
             return ResponseEntity.badRequest().body(new ResponseDataMessage(400, "sortDirection phải là 'asc' hoặc 'desc'", null, HttpStatus.BAD_REQUEST));
         }
 
-        if (responses.isEmpty()) {
+        if (responses.getTotalElements() == 0) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có danh sách lời mời kết bạn nào phù hợp", null, HttpStatus.NO_CONTENT));
         }
         return new ResponseEntity<>(

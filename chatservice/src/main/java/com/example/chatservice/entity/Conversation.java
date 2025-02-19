@@ -21,4 +21,5 @@ public class Conversation {
     private String avatar;
     private LocalDateTime dateCreate;
     private String idLastMessage;
+    private int numberMember;
 }

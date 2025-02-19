@@ -1,6 +1,7 @@
 package com.example.friendservice.service.Impl;
 
 import com.example.commonservice.exception.ResourceNotFoundException;
+import com.example.commonservice.model.PageResponse;
 import com.example.friendservice.dto.request.FriendCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.response.FriendResponse;
@@ -37,14 +38,14 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public Page<FriendResponse> getAllFriendByIdAccount(int idAccount, String name, int page, int size, String sortDirection) {
+    public PageResponse<FriendResponse> getAllFriendByIdAccount(int idAccount, String name, int page, int size, String sortDirection) {
         Sort sort = "asc".equalsIgnoreCase(sortDirection)
                 ? Sort.by("timeCreate").ascending()
                 : Sort.by("timeCreate").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Friend> friendPage = friendRepository.findFriendByIdAccountAndName(idAccount, name, pageable);
-
-        return friendPage.map(friendMapper::toFriendResponse);
+        Page<FriendResponse> friendResponsePage = friendPage.map(friendMapper::toFriendResponse);
+        return new PageResponse<>(friendResponsePage);
     }
 
     @Override

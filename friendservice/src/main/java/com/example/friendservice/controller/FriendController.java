@@ -2,6 +2,7 @@ package com.example.friendservice.controller;
 
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.model.OKMessage;
+import com.example.commonservice.model.PageResponse;
 import com.example.commonservice.model.ResponseDataMessage;
 import com.example.friendservice.dto.response.FriendRequestResponse;
 import com.example.friendservice.dto.response.FriendResponse;
@@ -35,9 +36,9 @@ public class FriendController {
             return ResponseEntity.badRequest().body(new ResponseDataMessage(400, "sortDirection phải là 'asc' hoặc 'desc'", null, HttpStatus.BAD_REQUEST));
         }
 
-        Page<FriendResponse> responses = friendService.getAllFriendByIdAccount(idAccount, name, page, size, sortDirection);
+        PageResponse<FriendResponse> responses = friendService.getAllFriendByIdAccount(idAccount, name, page, size, sortDirection);
 
-        if (responses.isEmpty()) {
+        if (responses.getTotalElements() == 0) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có bạn bè nào phù hợp", null, HttpStatus.NO_CONTENT));
         }
 
