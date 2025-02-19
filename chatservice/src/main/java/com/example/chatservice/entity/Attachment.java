@@ -1,5 +1,6 @@
 package com.example.chatservice.entity;
 
+import com.example.chatservice.eenum.AttachmentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,14 +18,9 @@ public class Attachment {
     private String idAttachment;
     private String idMessage;
     private String idConversation;
-    private String type;
+    private AttachmentType type;
     private String url;
     private String size;
     private LocalDateTime timeUpload;
     private MetaData metaData;
-
-    public static class MetaData {
-        private int width;
-        private int height;
-    }
 }

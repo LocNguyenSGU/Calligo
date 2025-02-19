@@ -18,7 +18,7 @@ public class Conversation {
     private String idConversation;
     private ConversationType type;  // "double" hoặc "group"
     private String name;
-    private String nguoiTao;
+    private String avatar;
     private LocalDateTime dateCreate;
     private String idLastMessage;
 }

@@ -19,5 +19,6 @@ public class Participant {
     private String idConversation;
     private String idAccount;
     private ParicipantRole role;
-    private LocalDateTime dataJoin;
+    private LocalDateTime dateJoin;
+    private boolean isTyping;
 }
