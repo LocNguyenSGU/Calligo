@@ -23,4 +23,5 @@ public class Attachment {
     private String size;
     private LocalDateTime timeUpload;
     private MetaData metaData;
+    private int order; // thu tu khi gui tin nhan
 }
