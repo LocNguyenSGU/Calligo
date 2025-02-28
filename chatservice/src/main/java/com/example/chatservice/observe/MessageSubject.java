@@ -1,12 +1,13 @@
 package com.example.chatservice.observe;
 
 import com.example.chatservice.entity.Message;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
+@Component
 public class MessageSubject {
     private final Map<Integer, List<MessageObserve>> observerMap = new ConcurrentHashMap<>();
 
