@@ -1,15 +1,17 @@
 package com.example.chatservice.service;
 
-import com.example.chatservice.dto.ConversationRequestDTO;
-import com.example.chatservice.entity.Conversation;
+import com.example.chatservice.dto.request.ParticipantRequestDTO;
+import com.example.chatservice.dto.response.ParticipantResponse;
+import com.example.chatservice.entity.Participant;
 
 import java.util.List;
 
 public interface ParticipantService {
-    List<Conversation> getAllConversation();
 
-    Conversation saveConversation(ConversationRequestDTO request);
+    void saveParticipant(ParticipantRequestDTO request);
 
-    Conversation getConversationById(String idConversation);
+    ParticipantResponse getParticipantbyId(String idParticipant);
+
+    List<Participant> getAllParticipant();
 
 }

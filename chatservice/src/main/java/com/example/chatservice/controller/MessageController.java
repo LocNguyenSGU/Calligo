@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/api/v1/chat-service/messages")
 public class MessageController {
     @Autowired
     private MessageService messageService;

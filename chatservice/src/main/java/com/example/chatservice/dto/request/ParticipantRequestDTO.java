@@ -1,8 +1,8 @@
-package com.example.chatservice.dto;
+package com.example.chatservice.dto.request;
 
 import com.example.chatservice.eenum.ParicipantRole;
+import com.example.commonservice.customEnum.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,10 +19,10 @@ public class ParticipantRequestDTO {
     @NotBlank(message = "ID tai khoan khong được để trống")
     private String idAccount;
 
+    @ValidEnum(enumClass = ParicipantRole.class)
     private ParicipantRole role;
 
-    @NotNull(message = "Thoi gian tham gia khong duoc bo trong")
-    private LocalDateTime dateJoin;
+    private LocalDateTime dateJoin = LocalDateTime.now();
 
     private boolean isTyping;
 }

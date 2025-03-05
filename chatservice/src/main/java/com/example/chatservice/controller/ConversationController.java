@@ -1,13 +1,63 @@
 package com.example.chatservice.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.chatservice.dto.request.ConversationRequestDTO;
+import com.example.chatservice.dto.response.ConversationResponse;
+import com.example.chatservice.dto.response.ResponseData;
+import com.example.chatservice.entity.Conversation;
+import com.example.chatservice.service.ConversationService;
+import com.example.commonservice.model.OKMessage;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/conversation")
+@RequestMapping("/api/v1/chat-service/conversation")
 public class ConversationController {
 
+    @Autowired
+    ConversationService conversationService;
+
     @PostMapping("/create")
-    public
+    public ResponseEntity<?> createConversation(@Valid @RequestBody ConversationRequestDTO request) {
+
+        conversationService.saveConversation(request);
+        ResponseData responseData = new ResponseData();
+        responseData.setCode(200);
+        responseData.setMessage("Tạo cuoc tro chuyen thành công");
+        responseData.setStatus(HttpStatus.OK);
+        responseData.setData("");
+
+        return new ResponseEntity<>(new OKMessage(200, "Tạo cuoc tro chuyen thành công", HttpStatus.OK), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseData getConversation() {
+
+        List<Conversation> responses = conversationService.getAllConversation();
+        return ResponseData.builder()
+                .code(200)
+                .message("Get cuoc tro chuyen thanh cong")
+                .status(HttpStatus.OK)
+                .data(responses)
+                .build();
+    }
+
+    @GetMapping("/idConversation/{idConversation}")
+    public ResponseData getConversationByid(@PathVariable String idConversation) {
+
+        ConversationResponse response = conversationService.getConversationById(idConversation);
+
+        return ResponseData.builder()
+                .code(200)
+                .message("Get cuoc tro chuyen voi ID thanh cong")
+                .status(HttpStatus.OK)
+                .data(response)
+                .build();
+    }
+
+
 }

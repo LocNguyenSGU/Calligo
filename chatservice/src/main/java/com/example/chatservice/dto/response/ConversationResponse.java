@@ -2,20 +2,19 @@ package com.example.chatservice.dto.response;
 
 import com.example.chatservice.eenum.ConversationType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "conversations")
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ConversationResponse {
-    @Id
-    private String idConversation;
+
     private ConversationType type;  // "double" hoặc "group"
     private String name;
     private String avatar;

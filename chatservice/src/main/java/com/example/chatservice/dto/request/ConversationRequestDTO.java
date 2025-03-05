@@ -1,6 +1,7 @@
-package com.example.chatservice.dto;
+package com.example.chatservice.dto.request;
 
 import com.example.chatservice.eenum.ConversationType;
+import com.example.commonservice.customEnum.ValidEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ConversationRequestDTO {
 
-
+    @ValidEnum(enumClass = ConversationType.class)
     private ConversationType type;
 
     private String name;

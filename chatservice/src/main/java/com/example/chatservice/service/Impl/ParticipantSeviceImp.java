@@ -1,40 +1,45 @@
 package com.example.chatservice.service.Impl;
 
-import com.example.chatservice.dto.ConversationRequestDTO;
-import com.example.chatservice.entity.Conversation;
-import com.example.chatservice.repository.ConversationRepository;
-import com.example.chatservice.service.ConversationService;
+import com.example.chatservice.dto.request.ParticipantRequestDTO;
+import com.example.chatservice.dto.response.ParticipantResponse;
+import com.example.chatservice.entity.Participant;
+import com.example.chatservice.mapper.ParticipantMapper;
+import com.example.chatservice.repository.ParticipantRepository;
+import com.example.chatservice.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ParticipantSeviceImp implements ConversationService {
+public class ParticipantSeviceImp implements ParticipantService {
 
     @Autowired
-    ConversationRepository conversationRepository;
+    private ParticipantRepository participantRepository;
+
+    @Autowired
+    private ParticipantMapper participantMapper;
 
     @Override
-    public List<Conversation> getAllConversation() {
-        return conversationRepository.findAll();
+    public void saveParticipant(ParticipantRequestDTO request) {
+        Participant participant = participantMapper.toParticipant(request);
+
+        participantRepository.save(participant);
+
     }
 
     @Override
-    public Conversation saveConversation(ConversationRequestDTO request) {
-        Conversation conversation = new Conversation();
-        conversation.setType(request.getType());
-        conversation.setName(request.getName());
-        conversation.setAvatar(request.getAvatar());
-        conversation.setDateCreate(request.getDateCreate());
-        conversation.setIdLastMessage(request.getIdLastMessage());
-        conversation.setNumberMember(request.getNumberMember());
-        return conversationRepository.save(conversation);
+    public ParticipantResponse getParticipantbyId(String idParticipant) {
+        Participant participant = participantRepository.findByIdParticipant(idParticipant);
+        ParticipantResponse response = participantMapper.toParticipantResponse(participant);
+        return response;
     }
-
 
     @Override
-    public Conversation getConversationById(String idConversation) {
-        return conversationRepository.findByIdConversation(idConversation);
+    public List<Participant> getAllParticipant() {
+
+        return participantRepository.findAll();
     }
+
+
 }
