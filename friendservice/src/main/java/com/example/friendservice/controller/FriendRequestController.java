@@ -8,17 +8,11 @@ import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
 import com.example.friendservice.dto.response.FriendRequestStatusResponse;
-import com.example.friendservice.dto.response.FriendResponse;
-import com.example.friendservice.eenum.FriendRequestEnum;
 import com.example.friendservice.service.FriendRequestService;
-import com.example.friendservice.service.FriendService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,9 +33,11 @@ public class FriendRequestController {
 
         return new ResponseEntity<>(new ResponseDataMessage("Tao friend request thanh cong", idFriendRequested), HttpStatus.OK);
     }
+
     @PutMapping("{idFriendRequest}/status")
-    public ResponseEntity<?> updateFriendRequest(@Valid @RequestBody FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest,@PathVariable int idFriendRequest) {
+    public ResponseEntity<?> updateFriendRequest(@Valid @RequestBody FriendRequestUpdateStatusRequest friendRequestUpdateStatusRequest, @PathVariable int idFriendRequest) {
         friendRequestService.updateFriendRequest(friendRequestUpdateStatusRequest, idFriendRequest);
+
         return new ResponseEntity<>(new OKMessage(200, "Update status friend request thanh cong", HttpStatus.OK), HttpStatus.OK);
     }
 
@@ -51,7 +47,7 @@ public class FriendRequestController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "desc") String sortDirection,
-            @RequestParam(defaultValue = "") String name)   {
+            @RequestParam(defaultValue = "") String name) {
         PageResponse<FriendRequestResponse> responses = friendRequestService.getFriendRequestsByIdAccountAndName(
                 idAccountReceive, name, page, size, sortDirection);
         // Chỉ chấp nhận "asc" hoặc "desc" cho sortDirection
@@ -77,8 +73,6 @@ public class FriendRequestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No friend request found");
         }
     }
-
-
 
 
 }

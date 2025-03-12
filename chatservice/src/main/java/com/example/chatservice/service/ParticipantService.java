@@ -14,4 +14,6 @@ public interface ParticipantService {
 
     List<Participant> getAllParticipant();
 
+    List<ParticipantResponse> getAllParticipantByAccount(String idAccount);
+
 }

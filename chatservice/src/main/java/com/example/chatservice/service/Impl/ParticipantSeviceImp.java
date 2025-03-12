@@ -30,15 +30,18 @@ public class ParticipantSeviceImp implements ParticipantService {
 
     @Override
     public ParticipantResponse getParticipantbyId(String idParticipant) {
-        Participant participant = participantRepository.findByIdParticipant(idParticipant);
-        ParticipantResponse response = participantMapper.toParticipantResponse(participant);
-        return response;
+        return participantRepository.findByIdParticipant(idParticipant);
     }
 
     @Override
     public List<Participant> getAllParticipant() {
 
         return participantRepository.findAll();
+    }
+
+    @Override
+    public List<ParticipantResponse> getAllParticipantByAccount(String idAccount) {
+        return participantRepository.findByIdAccount(idAccount);
     }
 
 

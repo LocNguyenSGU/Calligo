@@ -54,5 +54,15 @@ public class ParticipantController {
         return ResponseData.builder().code(200).message("Get Participant voi ID thanh cong").status(HttpStatus.OK).data(response).build();
     }
 
+//    @GetMapping("/idConversation/{idConversation}")
+//    public ResponseData getParticipantByIdConversation(@PathVariable String idConversation) {
+//
+//        ParticipantResponse response = participantService.getParticipantbyId(idConversation);
+//        if (response == null) {
+//            return ResponseData.builder().code(404).message("Khong tim thay participant").status(HttpStatus.OK).build();
+//        }
+//        return ResponseData.builder().code(200).message("Get Participant voi ID thanh cong").status(HttpStatus.OK).data(response).build();
+//    }
+
 
 }
