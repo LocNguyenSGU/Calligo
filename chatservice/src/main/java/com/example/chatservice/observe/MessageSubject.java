@@ -28,7 +28,9 @@ public class MessageSubject {
 
     public void notifyObservers(String conversationId, Message message) {
         List<MessageObserve> observers = observerMap.get(conversationId);
-        
+        System.out.println("📨 Gửi tin nhắn: " + message.getContent());
+        System.out.println(observers);
+
         if (observers != null) {
             observers.forEach(observer -> observer.onMessageReceived(message));
         }

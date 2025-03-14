@@ -10,7 +10,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 
@@ -27,7 +26,7 @@ public class ChatWebsocketController {
     }
 
     // Khi một client subscribe vào conversation, thêm observer
-    @SubscribeMapping("/topic/conversation/{idConversation}")
+    @MessageMapping("/topic/conversation/{idConversation}")
     public void addObserver(@DestinationVariable String idConversation, SimpMessageHeaderAccessor headerAccessor) {
         String socketSessionId = headerAccessor.getSessionId();
         MessageObserve observer = new WebSocketMessageObserve(socketSessionId, simpMessagingTemplate, "/topic/conversation/" + idConversation);
