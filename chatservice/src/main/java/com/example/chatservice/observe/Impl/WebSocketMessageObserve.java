@@ -23,4 +23,9 @@ public class WebSocketMessageObserve implements MessageObserve {
             simpMessagingTemplate.convertAndSend(destination, message);
         }
     }
+
+    @Override
+    public String getSocketSessionId() {
+        return socketSessionId;
+    }
 }
