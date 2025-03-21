@@ -18,7 +18,7 @@ public class WebSocketMessageObserve implements MessageObserve {
     @Override
     public void onMessageReceived(Message message) {
         if (socketSessionId != null) {
-            System.out.println("📨 Gửi tin nhắn qua WebSocket: " + message.getContent());
+            System.out.println("📨 Tin nhắn qua WebSocket: " + message.getContent());
             System.out.println("destination:" + destination);
             simpMessagingTemplate.convertAndSend(destination, message);
         }
