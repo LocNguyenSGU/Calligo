@@ -13,7 +13,9 @@ public class MessageSubject {
     private final Map<String, List<MessageObserve>> observerMap = new ConcurrentHashMap<>();
 
     public void addObserver(String conversationId, MessageObserve observer) {
+
         observerMap.computeIfAbsent(conversationId, k -> new CopyOnWriteArrayList<>()).add(observer);
+
         for (Map.Entry<String, List<MessageObserve>> entry : observerMap.entrySet()) {
             System.out.println("Key: " + entry.getKey() + ", Observers size: " + entry.getValue().size());
         }
@@ -30,7 +32,7 @@ public class MessageSubject {
     }
 
     public void notifyObservers(String conversationId, Message message, String senderSessionId) {
-        System.out.println("Conversation id lay: " +  conversationId);
+        System.out.println("Conversation id lay: " + conversationId);
         List<MessageObserve> observers = observerMap.get(conversationId);
         System.out.println("📨 Gửi tin nhắn: " + message.getContent());
         System.out.println(observers);

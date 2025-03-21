@@ -1,7 +1,6 @@
 package com.example.chatservice.controller;
 
 import com.example.chatservice.dto.request.ConversationRequestDTO;
-import com.example.chatservice.dto.response.ConversationResponse;
 import com.example.chatservice.dto.response.ParticipantResponse;
 import com.example.chatservice.dto.response.ResponseData;
 import com.example.chatservice.entity.Conversation;
@@ -53,18 +52,18 @@ public class ConversationController {
                 .build();
     }
 
-    @GetMapping("/idConversation/{idConversation}")
-    public ResponseData getConversationByid(@PathVariable String idConversation) {
-
-        ConversationResponse response = conversationService.getConversationById(idConversation);
-
-        return ResponseData.builder()
-                .code(200)
-                .message("Get cuoc tro chuyen voi ID thanh cong")
-                .status(HttpStatus.OK)
-                .data(response)
-                .build();
-    }
+//    @GetMapping("/idConversation/{idConversation}")
+//    public ResponseData getConversationByid(@PathVariable String idConversation) {
+//
+//        ConversationResponse response = conversationService.getConversationById(idConversation);
+//
+//        return ResponseData.builder()
+//                .code(200)
+//                .message("Get cuoc tro chuyen voi ID thanh cong")
+//                .status(HttpStatus.OK)
+//                .data(response)
+//                .build();
+//    }
 
 
     @GetMapping("/idParticipant/{idAccount}")
@@ -72,7 +71,7 @@ public class ConversationController {
 
         List<ParticipantResponse> responses = participantService.getAllParticipantByAccount(idAccount);
 
-        List<ConversationResponse> conversationResponseList = responses.stream()
+        List<Conversation> conversationList = responses.stream()
                 .map(ParticipantResponse::getIdConversation) // Lấy ID của Conversation
                 .map(id -> conversationService.getConversationById(id)) // Gọi service để lấy Conversation
                 .filter(Objects::nonNull) // Loại bỏ kết quả null
@@ -83,7 +82,7 @@ public class ConversationController {
                 .code(200)
                 .message("Get cuoc tro chuyen thanh cong")
                 .status(HttpStatus.OK)
-                .data(conversationResponseList)
+                .data(conversationList)
                 .build();
     }
 

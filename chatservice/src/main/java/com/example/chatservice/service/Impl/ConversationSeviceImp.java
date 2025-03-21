@@ -1,7 +1,6 @@
 package com.example.chatservice.service.Impl;
 
 import com.example.chatservice.dto.request.ConversationRequestDTO;
-import com.example.chatservice.dto.response.ConversationResponse;
 import com.example.chatservice.entity.Conversation;
 import com.example.chatservice.mapper.ConversationMapper;
 import com.example.chatservice.repository.ConversationRepository;
@@ -33,9 +32,8 @@ public class ConversationSeviceImp implements ConversationService {
 
 
     @Override
-    public ConversationResponse getConversationById(String idConversation) {
+    public Conversation getConversationById(String idConversation) {
         Conversation conversation = conversationRepository.findByIdConversation(idConversation);
-        ConversationResponse response = conversationMapper.toConversationResponse(conversation);
-        return response;
+        return conversation;
     }
 }

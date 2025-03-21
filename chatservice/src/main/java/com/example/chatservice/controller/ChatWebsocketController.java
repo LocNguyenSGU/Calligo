@@ -14,12 +14,15 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
 public class ChatWebsocketController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final MessageSubject messageSubject;
+    public List<String> publicIdConversation = new ArrayList<>();
     @Autowired
     private MessageService messageService;
 
@@ -35,8 +38,16 @@ public class ChatWebsocketController {
         System.out.println("id Conversation nhan duoc o controler: " + idConversation);
         System.out.println("conversationId.hashCode() = " + idConversation.hashCode());
         System.out.println("conversationId.equals(\"1\"): " + idConversation.equals("67d4250cd43a4661c2a18360"));
-        MessageObserve observer = new WebSocketMessageObserve(socketSessionId, simpMessagingTemplate, "/topic/conversation/" + idConversation);
-        messageSubject.addObserver(idConversation, observer);
+
+        if (!publicIdConversation.contains(idConversation)) {
+            publicIdConversation.add(idConversation);
+            MessageObserve observer = new WebSocketMessageObserve(socketSessionId, simpMessagingTemplate, "/topic/conversation/" + idConversation);
+            messageSubject.addObserver(idConversation, observer);
+            System.out.println("conversationId chua ton tai");
+        } else {
+            System.out.println("conversationId da ton tai");
+        }
+
     }
 
     // Khi client disconnect, xóa observer khỏi danh sách

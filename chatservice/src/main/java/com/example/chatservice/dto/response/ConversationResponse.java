@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ConversationResponse {
-
+    private String idConversation;
     private ConversationType type;  // "double" hoặc "group"
     private String name;
     private String avatar;

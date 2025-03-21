@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Builder
 public class ResponseData {
+
     private int code;
     private String message;
     private Object data;

@@ -24,7 +24,7 @@ public class MessageServiceImp implements MessageService {
         Message savedMessage = messageRepository.save(message);
 
         // Gửi tin nhắn tới topic "/topic/conversation/{idConversation}"
-        simpMessagingTemplate.convertAndSend("/topic/conversation/" + message.getIdConversation(), savedMessage);
+        //simpMessagingTemplate.convertAndSend("/topic/conversation/" + message.getIdConversation(), savedMessage);
 
         return messageRepository.save(message);
     }
