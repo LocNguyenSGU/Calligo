@@ -39,7 +39,7 @@ public class MessageSubject {
         if (observers != null) {
             observers.forEach(observer -> {
                 System.out.println("Tin nhắn gửi cho: " + observer.getSocketSessionId());
-                observer.onMessageReceived(message);
+                observer.onMessageReceived(message, "/topic/conversation/"+ conversationId);
             });
         }
     }
