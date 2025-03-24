@@ -12,6 +12,7 @@ import com.example.userservice.mapper.AccountMapper;
 import com.example.userservice.repository.AccountRepository;
 import com.example.userservice.repository.httpClient.FriendClient;
 import com.example.userservice.service.AccountService;
+import com.example.userservice.service.RedisService;
 import com.example.userservice.service.RoleService;
 import com.example.userservice.util.FriendshipResponseUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,8 @@ public class AccountServiceImpl implements AccountService {
     private RoleService roleService;
     @Autowired
     private FriendClient friendClient;
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public int checkLogin(LoginRequest loginRequest) throws ResourceNotFoundException {
@@ -97,6 +100,7 @@ public class AccountServiceImpl implements AccountService {
     public boolean existsAccountByEmail(String email) {
         return accountRepository.existsByEmail(email);
     }
+
     public boolean existsAccountByPhoneNumber(String phoneNumber) {
         return accountRepository.existsByPhoneNumber(phoneNumber);
     }

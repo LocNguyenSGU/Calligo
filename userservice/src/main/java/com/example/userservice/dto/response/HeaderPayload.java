@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class HeaderPayload {
     private String email;
     private RoleResponse role;
+    private String deviceId;
 }

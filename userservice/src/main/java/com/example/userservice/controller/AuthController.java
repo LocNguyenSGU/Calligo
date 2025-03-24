@@ -1,7 +1,5 @@
 package com.example.userservice.controller;
 
-import com.example.commonservice.exception.InvalidInputException;
-import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.exception.UnauthorizedException;
 import com.example.commonservice.model.ErrorObjectMessage;
 import com.example.commonservice.model.OKMessage;
@@ -11,17 +9,17 @@ import com.example.userservice.dto.request.SignUpRequest;
 import com.example.userservice.dto.response.AccountResponse;
 import com.example.userservice.dto.response.HeaderPayload;
 import com.example.userservice.dto.response.ResponseData;
+import com.example.userservice.entity.Account;
 import com.example.userservice.security.JwtTokenProvider;
 import com.example.userservice.service.AccountService;
+import com.example.userservice.service.RedisService;
 import com.example.userservice.service.RefreshTokenService;
-import io.netty.handler.codec.http.Cookie;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,11 +30,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/user-service/auth")
@@ -48,30 +46,40 @@ public class AuthController {
     private RefreshTokenService refreshTokenService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private RedisService redisService;
+
 
     @Operation(summary = "Login",
-    description = "Api for login",
-    responses = {
-            @ApiResponse (responseCode = "401", description = "Sai thong tin dang nhap"),
-            @ApiResponse (responseCode = "200", description = "Danh nhap than cong"),
-            @ApiResponse (responseCode = "400", description = "Sai thong tin dau vao")
-    })
+            description = "Api for login",
+            responses = {
+                    @ApiResponse(responseCode = "401", description = "Sai thong tin dang nhap"),
+                    @ApiResponse(responseCode = "200", description = "Danh nhap than cong"),
+                    @ApiResponse(responseCode = "400", description = "Sai thong tin dau vao")
+            })
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         // Kiểm tra đăng nhập
         int checkLogin = accountService.checkLogin(loginRequest);
 
-        if (checkLogin == 0) throw  new UnauthorizedException("Sai thông tin đăng nhập " + loginRequest.getEmail());
+        if (checkLogin == 0) throw new UnauthorizedException("Sai thông tin đăng nhập " + loginRequest.getEmail());
+
+
+        // Tao deviceId va luu vao redis
+        String deviceId = UUID.randomUUID().toString();
+
 
         // Nếu đăng nhập thành công, tạo accessToken và refreshToken
         AccountResponse accountResponse = accountService.getAccountResponseByEmail(loginRequest.getEmail());
-        HeaderPayload headerPayload = new HeaderPayload(accountResponse.getEmail(), accountResponse.getRole());
+        HeaderPayload headerPayload = new HeaderPayload(accountResponse.getEmail(), accountResponse.getRole(), deviceId);
         String accessToken = jwtTokenProvider.generateToken(headerPayload);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(loginRequest.getEmail());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(loginRequest.getEmail(), deviceId);
+        redisService.setOnline(accountResponse.getIdAccount(), deviceId);
+        redisService.removeLastSeen(accountResponse.getIdAccount());
 
         // Tạo RefreshTokenCreateRequest với LocalDateTime
         RefreshTokenCreateRequest refreshTokenCreateRequest = new RefreshTokenCreateRequest(
-                refreshToken, LocalDateTime.now(), jwtTokenProvider.getExpirationTimeTokenFromJwtToken(refreshToken) , loginRequest.getEmail()
+                refreshToken, LocalDateTime.now(), jwtTokenProvider.getExpirationTimeTokenFromJwtToken(refreshToken), loginRequest.getEmail()
         );
         refreshTokenService.saveRefreshToken(refreshTokenCreateRequest);
 
@@ -88,27 +96,28 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(responseData);
     }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         Map<String, String> errorMessages = new HashMap<>();
 
         // Kiểm tra email
-        if(accountService.existsAccountByEmail(signUpRequest.getEmail())) {
+        if (accountService.existsAccountByEmail(signUpRequest.getEmail())) {
             errorMessages.put("email", "Email đã tồn tại");
         }
 
         // Kiểm tra số điện thoại
-        if(accountService.existsAccountByPhoneNumber(signUpRequest.getPhoneNumber())) {
+        if (accountService.existsAccountByPhoneNumber(signUpRequest.getPhoneNumber())) {
             errorMessages.put("phoneNumber", "Số điện thoại đã tồn tại");
         }
 
         // Kiểm tra mật khẩu và RePassword
-        if(!signUpRequest.isPasswordEquals()) {
+        if (!signUpRequest.isPasswordEquals()) {
             errorMessages.put("password", "Mật khẩu nhập lại không khớp");
         }
 
         // Nếu có lỗi, trả về tất cả lỗi
-        if(!errorMessages.isEmpty()) {
+        if (!errorMessages.isEmpty()) {
             return new ResponseEntity<>(new ErrorObjectMessage(400, errorMessages, "Đã xảy ra lỗi khi tạo tài khoản", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
 
@@ -170,7 +179,8 @@ public class AuthController {
             }
             // Nếu đăng nhập thành công, tạo accessToken và refreshToken
             AccountResponse accountResponse = accountService.getAccountResponseByEmail(email);
-            HeaderPayload headerPayload = new HeaderPayload(accountResponse.getEmail(), accountResponse.getRole());
+            String deviceId = jwtTokenProvider.getDeviceIdFromJwtToken(refreshToken);
+            HeaderPayload headerPayload = new HeaderPayload(accountResponse.getEmail(), accountResponse.getRole(), deviceId);
             String newAccessToken = jwtTokenProvider.generateToken(headerPayload);
 
             // Tạo ResponseData chứa accessToken mới
@@ -188,6 +198,7 @@ public class AuthController {
                     .body(new ResponseData(500, "Đã xảy ra lỗi trong quá trình cấp lại access token", null, HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         // Lấy refreshToken từ Cookie
@@ -201,6 +212,13 @@ public class AuthController {
 
         // Xóa refreshToken trong cơ sở dữ liệu
         refreshTokenService.deleteByToken(refreshToken);
+        Optional<Account> account = accountService.getAccountByEmail(jwtTokenProvider.getEmailFromJwtToken(refreshToken));
+        String deviceId = jwtTokenProvider.getDeviceIdFromJwtToken(refreshToken);
+        redisService.removeOnline(account.get().getIdAccount(), deviceId);
+        if (!redisService.isOnline(account.get().getIdAccount())) {
+            redisService.setLastSeen(account.get().getIdAccount(), LocalDateTime.now().toString());
+        }
+
 
         // Xóa cookie refreshToken trên client
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", null)
@@ -231,6 +249,7 @@ public class AuthController {
         }
         return refreshToken;
     }
+
     private String getRefreshTokenFromResquest(HttpServletRequest httpServletRequest) {
         String refreshToken = null;
         OKMessage okMessage = new OKMessage("ok nef");

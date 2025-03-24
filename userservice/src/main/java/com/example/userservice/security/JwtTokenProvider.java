@@ -2,7 +2,10 @@ package com.example.userservice.security;
 
 import com.example.userservice.dto.response.HeaderPayload;
 import com.example.userservice.service.BlacklistTokenService;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -36,6 +39,7 @@ public class JwtTokenProvider {
         String jws = Jwts.builder()
                 .setSubject(headerPayload.getEmail())
                 .claim("role", headerPayload.getRole())
+                .claim("deviceId", headerPayload.getDeviceId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwt_expiration))
                 .signWith(key)
@@ -43,11 +47,12 @@ public class JwtTokenProvider {
         return jws;
     }
 
-    public String generateRefreshToken(String data) {
+    public String generateRefreshToken(String data, String deviceid) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
         // Tạo ID cho token
         String jws = Jwts.builder()
                 .setSubject(data)
+                .claim("deviceId", deviceid)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwt_refresh_expiration))
                 .signWith(key)
@@ -58,6 +63,11 @@ public class JwtTokenProvider {
     // Lấy username từ JWT
     public String getEmailFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // Lay deviceId tu token
+    public String getDeviceIdFromJwtToken(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("deviceId").toString();
     }
 
     public LocalDateTime getExpirationTimeTokenFromJwtToken(String token) {
@@ -90,7 +100,7 @@ public class JwtTokenProvider {
             System.out.println("JWT token is unsupported: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             System.out.println("JWT claims string is empty: " + e.getMessage());
-        }   catch (Exception e ){
+        } catch (Exception e) {
             System.out.println("JWT exception " + e.getMessage());
         }
         return false;
