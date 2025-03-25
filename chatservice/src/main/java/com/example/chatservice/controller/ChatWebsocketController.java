@@ -31,25 +31,6 @@ public class ChatWebsocketController {
         this.messageSubject = messageSubject;
     }
 
-    // Khi một client subscribe vào conversation, thêm observer
-    @MessageMapping("/topic/conversation/{idConversation}")
-    public void addObserver(@DestinationVariable String idConversation, SimpMessageHeaderAccessor headerAccessor) {
-        String socketSessionId = headerAccessor.getSessionId();
-        System.out.println("id Conversation nhan duoc o controler: " + idConversation);
-        System.out.println("conversationId.hashCode() = " + idConversation.hashCode());
-        System.out.println("conversationId.equals(\"1\"): " + idConversation.equals("67d4250cd43a4661c2a18360"));
-
-        if (!publicIdConversation.contains(idConversation)) {
-            publicIdConversation.add(idConversation);
-            MessageObserve observer = new WebSocketMessageObserve(socketSessionId, simpMessagingTemplate, "/topic/conversation/" + idConversation);
-            messageSubject.addObserver(idConversation, observer);
-            System.out.println("conversationId chua ton tai");
-        } else {
-            System.out.println("conversationId da ton tai");
-        }
-
-    }
-
     // Khi client disconnect, xóa observer khỏi danh sách
     @MessageMapping("/disconnect/{idConversation}")
     public void removeObserver(@DestinationVariable String idConversation, SimpMessageHeaderAccessor headerAccessor) {

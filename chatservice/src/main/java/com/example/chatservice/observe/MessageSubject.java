@@ -34,17 +34,12 @@ public class MessageSubject {
     public void notifyObservers(String conversationId, Message message, String senderSessionId) {
         System.out.println("Conversation id lay: " + conversationId);
         List<MessageObserve> observers = observerMap.get(conversationId);
-        System.out.println("📨 Gửi tin nhắn: " + message.getContent());
         System.out.println(observers);
 
         if (observers != null) {
             observers.forEach(observer -> {
-                System.out.println("tin nhắn lặp qua: " + observer.getSocketSessionId());
-                // So sánh sessionId để không gửi lại cho sender
-                if (!observer.getSocketSessionId().equals(senderSessionId)) {
-                    System.out.println("tin nhắn gửi cho: " + observer.getSocketSessionId());
-                    observer.onMessageReceived(message);
-                }
+                System.out.println("Tin nhắn gửi cho: " + observer.getSocketSessionId());
+                observer.onMessageReceived(message, "/topic/conversation/"+ conversationId);
             });
         }
     }

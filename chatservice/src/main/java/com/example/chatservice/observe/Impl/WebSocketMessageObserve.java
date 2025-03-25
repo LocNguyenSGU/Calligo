@@ -7,18 +7,16 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 public class WebSocketMessageObserve implements MessageObserve {
     private final String socketSessionId;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final String destination;
 
     public WebSocketMessageObserve(String socketSessionId, SimpMessagingTemplate simpMessagingTemplate, String destination) {
         this.socketSessionId = socketSessionId;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.destination = destination;
     }
 
     @Override
-    public void onMessageReceived(Message message) {
+    public void onMessageReceived(Message message, String destination) {
         if (socketSessionId != null) {
-            System.out.println("📨 Gửi tin nhắn qua WebSocket: " + message.getContent());
+            System.out.println("📨 Tin nhắn qua WebSocket: " + message.getContent());
             System.out.println("destination:" + destination);
             simpMessagingTemplate.convertAndSend(destination, message);
         }
