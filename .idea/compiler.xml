@@ -9,11 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="apigateway" />
         <module name="commonservice" />
-        <module name="userservice" />
         <module name="discoveryservice" />
-        <module name="notificationservice" />
         <module name="Calligo" />
-        <module name="friendservice" />
       </profile>
       <profile name="Annotation profile for chatservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -30,6 +27,37 @@
         </processorPath>
         <module name="chatservice" />
       </profile>
+      <profile name="Annotation profile for friendservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+        </processorPath>
+        <module name="friendservice" />
+      </profile>
+      <profile name="Annotation profile for notificationservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="notificationservice" />
+      </profile>
+      <profile name="Annotation profile for fileservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="fileservice" />
+        <module name="userservice" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="permissionservice" target="21" />
@@ -41,6 +69,7 @@
       <module name="chatservice" options="-parameters -Amapstruct.suppressGeneratorTimestamp=true -Amapstruct.defaultComponentModel=spring -Amapstruct.verbose=true" />
       <module name="commonservice" options="-parameters" />
       <module name="discoveryservice" options="-parameters" />
+      <module name="fileservice" options="-parameters" />
       <module name="friendservice" options="-parameters" />
       <module name="notificationservice" options="-parameters" />
       <module name="permissionservice" options="-parameters" />
