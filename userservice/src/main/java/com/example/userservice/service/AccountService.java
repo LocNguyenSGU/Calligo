@@ -1,5 +1,7 @@
 package com.example.userservice.service;
 
+import com.example.commonservice.model.PageResponse;
+import com.example.userservice.dto.request.AccountUpdateRequest;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.SignUpRequest;
 import com.example.userservice.dto.response.AccountBasicResponse;
@@ -21,5 +23,8 @@ public interface AccountService {
     boolean existsAccountByEmail(String email);
     boolean existsAccountByPhoneNumber(String phoneNumber);
     AccountRelationResponse getInfoAccountBasicByPhoneWithRelation(String phone, int idAccountSource);
+    AccountResponse updateAccount(AccountUpdateRequest userUpdateRequest, int idAccount);
+
+    PageResponse<AccountResponse> getAccounts(String email, int page, int size, String sortDirection);
 
 }

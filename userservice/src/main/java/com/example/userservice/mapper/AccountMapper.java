@@ -1,5 +1,6 @@
 package com.example.userservice.mapper;
 
+import com.example.userservice.dto.request.AccountUpdateRequest;
 import com.example.userservice.dto.request.SignUpRequest;
 import com.example.userservice.dto.response.*;
 import com.example.userservice.dto.response.FriendService.FriendshipResponse;
@@ -65,6 +66,8 @@ public interface AccountMapper {
     @Mapping(source = "accountBasicResponse", target = "accountBasicResponse")
     @Mapping(source = "friendshipResponse", target = "friendshipResponse")
     AccountRelationResponse toAccountRelationResponse(AccountBasicResponse accountBasicResponse, FriendshipResponse friendshipResponse);
+
+    Account toAccount(AccountUpdateRequest accountUpdateRequest);
 
 
 

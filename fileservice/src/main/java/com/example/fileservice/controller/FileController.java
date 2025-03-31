@@ -1,9 +1,12 @@
 package com.example.fileservice.controller;
 
 import com.cloudinary.utils.ObjectUtils;
+import com.example.commonservice.model.OKMessage;
+import com.example.commonservice.model.ResponseDataMessage;
 import com.example.fileservice.service.CloudinaryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +28,7 @@ public class FileController {
     @Autowired
     private CloudinaryService cloudinaryService;
     @PostMapping("/upload")
-    public ResponseEntity<List<Map<String, String>>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+    public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
         try {
             List<Map<String, String>> uploadedFiles = Arrays.stream(files)
                     .parallel()
@@ -40,7 +43,7 @@ public class FileController {
                     })
                     .collect(Collectors.toList());
 
-            return ResponseEntity.ok(uploadedFiles);
+            return new ResponseEntity<>(new ResponseDataMessage("Upload anh thanh cong", uploadedFiles), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Internal Server Error", e);
             return ResponseEntity.internalServerError().build();

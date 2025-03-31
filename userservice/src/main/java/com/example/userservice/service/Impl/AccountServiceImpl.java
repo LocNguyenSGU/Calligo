@@ -1,6 +1,8 @@
 package com.example.userservice.service.Impl;
 
 import com.example.commonservice.exception.ResourceNotFoundException;
+import com.example.commonservice.model.PageResponse;
+import com.example.userservice.dto.request.AccountUpdateRequest;
 import com.example.userservice.dto.request.LoginRequest;
 import com.example.userservice.dto.request.SignUpRequest;
 import com.example.userservice.dto.response.AccountBasicResponse;
@@ -16,6 +18,10 @@ import com.example.userservice.service.RoleService;
 import com.example.userservice.util.FriendshipResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -124,5 +130,33 @@ public class AccountServiceImpl implements AccountService {
         log.info("Final AccountRelationResponse: {}", accountRelationResponse);
 
         return accountRelationResponse;
+    }
+
+    @Override
+    public AccountResponse updateAccount(AccountUpdateRequest accountUpdateRequest, int idAccount) {
+        Account account = accountRepository.findById(idAccount).orElseThrow(() -> {
+            log.error("Account not found with idAccount: {}", idAccount);
+            return new ResourceNotFoundException("Khong co account voi idAccount: " + idAccount);
+        });
+        account.setFirstName(accountUpdateRequest.getFirstName());
+        account.setLastName(accountUpdateRequest.getLastName());
+        account.setAddress(accountUpdateRequest.getAddress());
+        account.setDateOfBirth(accountUpdateRequest.getDateOfBirth());
+        account.setImgAvatar(accountUpdateRequest.getImgAvatar());
+
+        Account accountNew = accountRepository.save(account);
+        return accountMapper.toAccountResponse(accountNew);
+    }
+
+    @Override
+    public PageResponse<AccountResponse> getAccounts(String email, int page, int size, String sortDirection) {
+        Sort sort = "asc".equalsIgnoreCase(sortDirection)
+                ? Sort.by("createdAt").ascending()
+                : Sort.by("createdAt").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Account> accountPage = accountRepository.findAccountByEmail(email, pageable);
+        Page<AccountResponse> accountResponsePage = accountPage.map(accountMapper::toAccountResponse);
+
+        return new PageResponse<>(accountResponsePage);
     }
 }
