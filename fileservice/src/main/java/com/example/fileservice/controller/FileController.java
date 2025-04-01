@@ -3,6 +3,8 @@ package com.example.fileservice.controller;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.commonservice.model.OKMessage;
 import com.example.commonservice.model.ResponseDataMessage;
+import com.example.commonservice.service.KafkaService;
+import com.example.fileservice.dto.FileMessage;
 import com.example.fileservice.service.CloudinaryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,10 @@ import java.util.stream.Collectors;
 public class FileController {
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private KafkaService kafkaService;
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+    public ResponseEntity<?> uploadFiles_Nomal(@RequestParam("files") MultipartFile[] files) {
         try {
             List<Map<String, String>> uploadedFiles = Arrays.stream(files)
                     .parallel()
@@ -48,5 +52,14 @@ public class FileController {
             log.error("Internal Server Error", e);
             return ResponseEntity.internalServerError().build();
         }
+    }
+    @PostMapping("/upload-kafka")
+    public ResponseEntity<String> uploadFiles(@RequestParam("files") List<MultipartFile> files,
+                                              @RequestParam("messageId") String messageId) throws IOException {
+        for (MultipartFile file : files) {
+            FileMessage fileMessage = new FileMessage(messageId, file.getName(), file.getContentType(), file.getBytes());
+            kafkaService.sendMessage("upload-file", fileMessage);
+        }
+        return ResponseEntity.ok("Files upload to Kafka successfully!");
     }
 }
