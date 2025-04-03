@@ -1,6 +1,7 @@
 package com.example.chatservice.service;
 
 import com.example.chatservice.dto.request.ConversationRequestDTO;
+import com.example.chatservice.dto.response.ConversationResponse;
 import com.example.chatservice.entity.Conversation;
 
 import java.util.List;
@@ -10,6 +11,6 @@ public interface ConversationService {
 
     void saveConversation(ConversationRequestDTO request);
 
-    Conversation getConversationById(String idConversation);
+    ConversationResponse getConversationById(String idConversation);
 
 }

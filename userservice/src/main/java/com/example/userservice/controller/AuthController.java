@@ -212,6 +212,8 @@ public class AuthController {
 
         // Xóa refreshToken trong cơ sở dữ liệu
         refreshTokenService.deleteByToken(refreshToken);
+
+        // Xóa deviceId trong redis
         Optional<Account> account = accountService.getAccountByEmail(jwtTokenProvider.getEmailFromJwtToken(refreshToken));
         String deviceId = jwtTokenProvider.getDeviceIdFromJwtToken(refreshToken);
         redisService.removeOnline(account.get().getIdAccount(), deviceId);

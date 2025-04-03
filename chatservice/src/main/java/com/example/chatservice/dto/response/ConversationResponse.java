@@ -21,4 +21,6 @@ public class ConversationResponse {
     private LocalDateTime dateCreate;
     private String idLastMessage;
     private int numberMember;
+    private boolean status;
+    private String lastSeen;
 }

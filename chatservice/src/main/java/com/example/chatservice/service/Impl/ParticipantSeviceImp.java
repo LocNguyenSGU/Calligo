@@ -44,5 +44,10 @@ public class ParticipantSeviceImp implements ParticipantService {
         return participantRepository.findByIdAccount(idAccount);
     }
 
+    @Override
+    public List<ParticipantResponse> getParticipantbyIdConversation(String idConversation) {
+        return participantRepository.findByIdConversation(idConversation);
+    }
+
 
 }
