@@ -25,6 +25,7 @@ public class Message {
     private String content;
     private MessageType type;
     private LocalDateTime timeSent;
+    private LocalDateTime timeUpdate;
     private List<Attachment> attachments;
     private Map<String, String> reactions;
     private String replyToMessageId;
