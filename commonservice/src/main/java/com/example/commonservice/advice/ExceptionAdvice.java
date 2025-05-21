@@ -1,5 +1,6 @@
 package com.example.commonservice.advice;
 
+import com.example.commonservice.exception.AccessDeniedException;
 import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.exception.UnauthorizedException;
@@ -29,7 +30,7 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-//     Xử lý lỗi input không hợp lệ
+    // Xử lý lỗi input không hợp lệ
     @ExceptionHandler(InvalidInputException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorMessage> handleInvalidInputException(InvalidInputException ex) {
@@ -37,6 +38,16 @@ public class ExceptionAdvice {
                 "400", ex.getMessage(), HttpStatus.BAD_REQUEST
         );
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    // Xử lý lỗi không có quyen hanh dong
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorMessage> handleResourceNotFoundException(AccessDeniedException ex) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                "403", ex.getMessage(), HttpStatus.FORBIDDEN
+        );
+        return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UnauthorizedException.class)

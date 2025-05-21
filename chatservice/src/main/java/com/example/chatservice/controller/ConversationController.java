@@ -1,14 +1,13 @@
 package com.example.chatservice.controller;
 
-import com.example.chatservice.dto.request.ConversationRequestDTO;
-import com.example.chatservice.dto.response.ConversationDetailDTO;
-import com.example.chatservice.dto.response.ParticipantResponse;
+import com.example.chatservice.dto.request.AddParticipantRequestDTO;
+import com.example.chatservice.dto.request.UpdateParticipantRequestDTO;
 import com.example.chatservice.dto.response.ResponseData;
 import com.example.chatservice.entity.Conversation;
 import com.example.chatservice.service.ConversationService;
-import com.example.chatservice.service.ParticipantService;
 import com.example.commonservice.model.OKMessage;
-import jakarta.validation.Valid;
+import com.example.commonservice.model.PageResponse;
+import com.example.commonservice.model.ResponseDataMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,26 +19,8 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/v1/chat-service/conversation")
 public class ConversationController {
-
     @Autowired
     ConversationService conversationService;
-
-    @Autowired
-    ParticipantService participantService;
-
-    @PostMapping("/create")
-    public ResponseEntity<?> createConversation(@Valid @RequestBody ConversationRequestDTO request) {
-
-        conversationService.saveConversation(request);
-        ResponseData responseData = new ResponseData();
-        responseData.setCode(200);
-        responseData.setMessage("Tạo cuoc tro chuyen thành công");
-        responseData.setStatus(HttpStatus.OK);
-        responseData.setData("");
-
-        return new ResponseEntity<>(new OKMessage(200, "Tạo cuoc tro chuyen thành công", HttpStatus.OK), HttpStatus.OK);
-    }
-
 
     @GetMapping
     public ResponseData getConversation() {
@@ -53,38 +34,51 @@ public class ConversationController {
                 .build();
     }
 
-    @GetMapping("/{idConversation}")
-    public ResponseData getConversationByid(@PathVariable String idConversation) {
+    @GetMapping("/idAccount/{idAccount}")
+    public ResponseEntity<?> getConversationsByAccountId(
+            @PathVariable String idAccount,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
 
-        ConversationDetailDTO conversationDetailDTO = conversationService.getConversationWithParticipants(idConversation);
+        if (!sortDirection.equalsIgnoreCase("asc") && !sortDirection.equalsIgnoreCase("desc")) {
+            return ResponseEntity.badRequest().body(new ResponseDataMessage(400, "sortDirection phải là 'asc' hoặc 'desc'", null, HttpStatus.BAD_REQUEST));
+        }
 
-        return ResponseData.builder()
-                .code(200)
-                .message("Get cuoc tro chuyen voi ID thanh cong")
-                .status(HttpStatus.OK)
-                .data(conversationDetailDTO)
-                .build();
+        PageResponse<Conversation> response = conversationService.getConversationsByAccountId(idAccount, page, size, sortDirection);
+
+        if (response.getTotalElements() == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có cuộc trò chuyện nào", null, HttpStatus.NO_CONTENT));
+        }
+
+        return ResponseEntity.ok(new ResponseDataMessage(200, "Lấy danh sách cuộc trò chuyện thành công", HttpStatus.OK, response));
     }
 
 
-    @GetMapping("/idParticipant/{idAccount}")
-    public ResponseData getConversationWithParticipant(@PathVariable String idAccount) {
+    @PostMapping("/{conversationId}/participants")
+    public ResponseEntity<?> addParticipant(@PathVariable String conversationId,
+                                            @RequestBody AddParticipantRequestDTO request) {
+        conversationService.addParticipant(conversationId, request);
+        return ResponseEntity.ok(new OKMessage("Participant added successfully"));
+    }
 
-        List<ParticipantResponse> responses = participantService.getAllParticipantByAccount(idAccount);
+    @DeleteMapping("/{conversationId}/participants/{idAccount}")
+    public ResponseEntity<?> removeParticipant(
+            @PathVariable String conversationId,
+            @PathVariable String idAccount
+    ) {
+        conversationService.removeParticipant(conversationId, idAccount);
+        return ResponseEntity.ok(new OKMessage("Participant removed successfully"));
+    }
 
-        List<Conversation> conversationList = responses.stream()
-                .map(ParticipantResponse::getIdConversation) // Lấy ID của Conversation
-                .map(id -> conversationService.getConversationById(id)) // Gọi service để lấy Conversation
-                .filter(Objects::nonNull) // Loại bỏ kết quả null
-                .toList(); // Chuyển thành danh sách
-
-
-        return ResponseData.builder()
-                .code(200)
-                .message("Get cuoc tro chuyen thanh cong")
-                .status(HttpStatus.OK)
-                .data(conversationList)
-                .build();
+    @PutMapping("/{conversationId}/participants/{participantId}")
+    public ResponseEntity<?> updateParticipantInfo(
+            @PathVariable String conversationId,
+            @PathVariable String participantId,
+            @RequestBody UpdateParticipantRequestDTO request
+    ) {
+        conversationService.updateParticipantInfo(conversationId, participantId, request);
+        return ResponseEntity.ok(new OKMessage("Participant updated successfully"));
     }
 
 }

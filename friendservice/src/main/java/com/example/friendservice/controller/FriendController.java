@@ -55,11 +55,7 @@ public class FriendController {
         if(idAccountTarget == idAccountSource) {
             friendshipResponse.setYourself(true);
         }
-        if(friendService.areFriends(idAccountSource, idAccountTarget)) {
-            friendshipResponse.setAreFriends(true);
-        } else {
-            friendshipResponse.setAreFriends(false);
-        }
+        friendshipResponse.setAreFriends(friendService.areFriends(idAccountSource, idAccountTarget));
 
         return ResponseEntity.ok(new ResponseDataMessage(200, "Kiem tra co phan ban be khong", friendshipResponse, HttpStatus.OK));
     }

@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 public class ResponseDataMessage {
     private int code = 200;
     private String message;
-    private Object data;
     private HttpStatus status = HttpStatus.OK;
+    private Object data;
 
     public ResponseDataMessage(String message, Object data) {
         this.message = message;

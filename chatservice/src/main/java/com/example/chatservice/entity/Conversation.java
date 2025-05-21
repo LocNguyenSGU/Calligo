@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "conversations")
 @Data
@@ -16,10 +17,11 @@ import java.time.LocalDateTime;
 public class Conversation {
     @Id
     private String idConversation;
-    private ConversationType type;  // "double" hoặc "group"
+    private ConversationType type;
     private String name;
     private String avatar;
     private LocalDateTime dateCreate;
-    private String idLastMessage;
+    private String lastMessageContent;
     private int numberMember;
+    private List<ParticipantInfo> participantInfos;
 }

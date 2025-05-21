@@ -12,13 +12,10 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "participants")
-public class Participant {
-    @Id
-    private String idParticipant;
-    private String idConversation;
+@Document(collection = "participantInfos")
+public class ParticipantInfo {
     private String idAccount;
     private ParicipantRole role;
+    private String nickname;
     private LocalDateTime dateJoin;
-    private boolean isTyping;
 }

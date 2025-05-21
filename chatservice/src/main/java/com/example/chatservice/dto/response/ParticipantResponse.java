@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Document(collection = "participants")
 public class ParticipantResponse {
-
     private String idConversation;
     private String idAccount;
     private ParicipantRole role;
