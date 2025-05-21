@@ -10,6 +10,7 @@ public interface ParticipantRepository extends MongoRepository<Participant, Stri
     ParticipantResponse findByIdParticipant(String idParticipant);
 
     List<ParticipantResponse> findByIdAccount(String idAccount);
+    List<Participant> findByIdConversation(String idConversation);
 
 
 }

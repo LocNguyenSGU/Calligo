@@ -1,6 +1,7 @@
 package com.example.chatservice.controller;
 
 import com.example.chatservice.dto.request.ConversationRequestDTO;
+import com.example.chatservice.dto.response.ConversationDetailDTO;
 import com.example.chatservice.dto.response.ParticipantResponse;
 import com.example.chatservice.dto.response.ResponseData;
 import com.example.chatservice.entity.Conversation;
@@ -52,18 +53,18 @@ public class ConversationController {
                 .build();
     }
 
-//    @GetMapping("/idConversation/{idConversation}")
-//    public ResponseData getConversationByid(@PathVariable String idConversation) {
-//
-//        ConversationResponse response = conversationService.getConversationById(idConversation);
-//
-//        return ResponseData.builder()
-//                .code(200)
-//                .message("Get cuoc tro chuyen voi ID thanh cong")
-//                .status(HttpStatus.OK)
-//                .data(response)
-//                .build();
-//    }
+    @GetMapping("/{idConversation}")
+    public ResponseData getConversationByid(@PathVariable String idConversation) {
+
+        ConversationDetailDTO conversationDetailDTO = conversationService.getConversationWithParticipants(idConversation);
+
+        return ResponseData.builder()
+                .code(200)
+                .message("Get cuoc tro chuyen voi ID thanh cong")
+                .status(HttpStatus.OK)
+                .data(conversationDetailDTO)
+                .build();
+    }
 
 
     @GetMapping("/idParticipant/{idAccount}")

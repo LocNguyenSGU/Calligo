@@ -5,7 +5,9 @@ import com.example.chatservice.entity.Message;
 import java.util.List;
 
 public interface MessageService {
-    public List<Message> getMessagesByConversation(String idConversation);
+     List<Message> getMessagesByConversation(String idConversation);
+     Message saveMessage(Message message);
 
-    public Message saveMessage(Message message);
+     Message updateMessage(Message message, String idMessage);
+
 }

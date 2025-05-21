@@ -12,6 +12,7 @@ public interface CloudinaryService {
     Map<String, String> uploadOtherFile(MultipartFile file) throws IOException;
     Map<String, String> uploadFile(MultipartFile file) throws IOException;
     String deleteFile(String publicId) throws IOException;
-
     void consumeFileMessage(FileMessage fileMessage) throws IOException;
+    Map<String, String> uploadFile_Kafka(MultipartFile file, String messageId, String sessionId) throws IOException;
+    String uploadFile_Test(MultipartFile file) throws IOException;
 }

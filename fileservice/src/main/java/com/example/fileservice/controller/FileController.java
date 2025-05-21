@@ -54,12 +54,27 @@ public class FileController {
         }
     }
     @PostMapping("/upload-kafka")
-    public ResponseEntity<String> uploadFiles(@RequestParam("files") List<MultipartFile> files,
+    public ResponseEntity<?> uploadFiles_Kafka(@RequestParam("files") MultipartFile[] files,
                                               @RequestParam("messageId") String messageId) throws IOException {
-        for (MultipartFile file : files) {
-            FileMessage fileMessage = new FileMessage(messageId, file.getName(), file.getContentType(), file.getBytes());
-            kafkaService.sendMessage("upload-file", fileMessage);
+        try {
+            List<String> uploadedFiles = Arrays.stream(files)
+                    .parallel()
+                    .map(file -> {
+                        try {
+                            log.info("Uploading file: {}", file.getOriginalFilename());
+                             return cloudinaryService.uploadFile_Test(file);
+//                            return cloudinaryService.uploadFile_Kafka(file, messageId, "sk123");
+                        } catch (IOException e) {
+                            log.error("Upload failed for file: {}", file.getOriginalFilename(), e);
+                            throw new RuntimeException("Upload failed: " + file.getOriginalFilename(), e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(new ResponseDataMessage("Upload anh thanh cong", uploadedFiles), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Internal Server Error", e);
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok("Files upload to Kafka successfully!");
     }
 }
