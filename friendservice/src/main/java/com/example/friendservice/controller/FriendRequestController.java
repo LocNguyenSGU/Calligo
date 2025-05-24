@@ -59,7 +59,7 @@ public class FriendRequestController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có danh sách lời mời kết bạn nào phù hợp", null, HttpStatus.NO_CONTENT));
         }
         return new ResponseEntity<>(
-                new ResponseDataMessage(200, "Lay danh sach loi moi ket ban thanh cong", responses, HttpStatus.OK)
+                new ResponseDataMessage(200, "Lay danh sach loi moi ket ban thanh cong", HttpStatus.OK, responses)
                 , HttpStatus.OK);
     }
 

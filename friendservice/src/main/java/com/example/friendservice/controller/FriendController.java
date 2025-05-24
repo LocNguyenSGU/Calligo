@@ -42,7 +42,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có bạn bè nào phù hợp", null, HttpStatus.NO_CONTENT));
         }
 
-        return ResponseEntity.ok(new ResponseDataMessage(200, "Lấy danh sách bạn bè thành công", responses, HttpStatus.OK));
+        return ResponseEntity.ok(new ResponseDataMessage(200, "Lấy danh sách bạn bè thành công", HttpStatus.OK, responses));
     }
 
     @GetMapping("/check-relationship/idAccountSource/{idAccountSource}/idAccountTarget/{idAccountTarget}")
@@ -57,7 +57,7 @@ public class FriendController {
         }
         friendshipResponse.setAreFriends(friendService.areFriends(idAccountSource, idAccountTarget));
 
-        return ResponseEntity.ok(new ResponseDataMessage(200, "Kiem tra co phan ban be khong", friendshipResponse, HttpStatus.OK));
+        return ResponseEntity.ok(new ResponseDataMessage(200, "Kiem tra co phan ban be khong", HttpStatus.OK, friendshipResponse));
     }
     @DeleteMapping("/{idFriend}")
     public ResponseEntity<?> deleteFriend(@PathVariable int idFriend) {

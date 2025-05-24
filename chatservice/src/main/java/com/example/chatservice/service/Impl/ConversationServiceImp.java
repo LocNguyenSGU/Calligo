@@ -2,6 +2,7 @@ package com.example.chatservice.service.Impl;
 
 import com.example.chatservice.dto.request.AddParticipantRequestDTO;
 import com.example.chatservice.dto.request.UpdateParticipantRequestDTO;
+import com.example.chatservice.eenum.ConversationType;
 import com.example.chatservice.eenum.ParicipantRole;
 import com.example.chatservice.entity.Conversation;
 import com.example.chatservice.entity.ParticipantInfo;
@@ -11,16 +12,22 @@ import com.example.chatservice.repository.ConversationRepository;
 import com.example.chatservice.service.ConversationService;
 import com.example.commonservice.exception.AccessDeniedException;
 import com.example.commonservice.exception.ResourceNotFoundException;
+import com.example.commonservice.model.FriendshipCreatedEvent;
 import com.example.commonservice.model.PageResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@Slf4j
 public class ConversationServiceImp implements ConversationService {
     @Autowired
     ConversationRepository conversationRepository;
@@ -128,6 +135,44 @@ public class ConversationServiceImp implements ConversationService {
             }
             participant.setRole(request.getRole());
         }
+
+        conversationRepository.save(conversation);
+    }
+
+    @Override
+    @KafkaListener(topics = "friendship-created", containerFactory = "kafkaListenerContainerFactory")
+    public void createConversation(FriendshipCreatedEvent friendshipCreatedEvent) {
+        System.out.println("Received FriendshipCreatedEvent: {}");
+
+        // Tạo danh sách participant
+        ParticipantInfo p1 = new ParticipantInfo(
+                friendshipCreatedEvent.getSenderId(),
+                ParicipantRole.USER,
+                "",
+                LocalDateTime.now()
+        );
+        ParticipantInfo p2 = new ParticipantInfo(
+                friendshipCreatedEvent.getReceiverId(),
+                ParicipantRole.USER,
+                "",
+                LocalDateTime.now()
+        );
+
+        List<ParticipantInfo> participants = List.of(p1, p2);
+        System.out.println("Created participants: {}");
+
+        // Tạo conversation
+        Conversation conversation = new Conversation();
+        conversation.setType(ConversationType.DOUBLE);
+        conversation.setDateCreate(LocalDateTime.now());
+        conversation.setNumberMember(2);
+        conversation.setParticipantInfos(participants);
+
+        // Optional: tạo id, avatar, name nếu cần
+        conversation.setIdConversation(UUID.randomUUID().toString());
+        conversation.setName(""); // sẽ hiển thị tên theo người kia
+        conversation.setAvatar("");
+        conversation.setLastMessageContent("");
 
         conversationRepository.save(conversation);
     }

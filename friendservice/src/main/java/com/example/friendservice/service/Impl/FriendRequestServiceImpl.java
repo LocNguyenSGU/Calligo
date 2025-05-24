@@ -2,7 +2,9 @@ package com.example.friendservice.service.Impl;
 
 import com.example.commonservice.exception.InvalidInputException;
 import com.example.commonservice.exception.ResourceNotFoundException;
+import com.example.commonservice.model.FriendshipCreatedEvent;
 import com.example.commonservice.model.PageResponse;
+import com.example.commonservice.service.KafkaService;
 import com.example.friendservice.dto.request.FriendRequestCreateRequest;
 import com.example.friendservice.dto.request.FriendRequestUpdateStatusRequest;
 import com.example.friendservice.dto.response.FriendRequestResponse;
@@ -31,6 +33,8 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     private FriendRequestMapper friendRequestMapper;
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private KafkaService kafkaService;
 
     @Override
     public int createFriendRequest(FriendRequestCreateRequest friendRequestCreateRequest) {
@@ -51,12 +55,13 @@ public class FriendRequestServiceImpl implements FriendRequestService {
             throw new InvalidInputException("Khong the cap nhat trang thai khi status ban dau cua friend request id: " + idFriendRequest + " da la ACCEPTED");
         }
         if(!friendRequest.getStatus().equals(FriendRequestEnum.ACCEPTED) && status.equals(FriendRequestEnum.ACCEPTED)) {
-            System.out.println("Trang thai cu: " + friendRequest.getStatus());
-            System.out.println("Trang thai moi: " + status);
-            System.out.println("Cap nhat trang thai va luu");
             friendService.createFriendService(friendRequest);
-        } else {
-            System.out.println("Khong cap nhat trang tahi");
+            FriendshipCreatedEvent friendshipCreatedEvent = new FriendshipCreatedEvent();
+            friendshipCreatedEvent.setSenderId(String.valueOf(friendRequest.getIdAccountSent()));
+            friendshipCreatedEvent.setReceiverId(String.valueOf(friendRequest.getIdAccountReceive()));
+            friendshipCreatedEvent.setAcceptTime(friendRequest.getTimeRequest());
+
+            kafkaService.sendMessage("friendship-created", friendshipCreatedEvent);
         }
         friendRequest.setStatus(status);
         friendRequestRepository.save(friendRequest);
