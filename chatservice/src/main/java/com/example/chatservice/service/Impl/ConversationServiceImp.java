@@ -9,10 +9,13 @@ import com.example.chatservice.entity.ParticipantInfo;
 import com.example.chatservice.mapper.ConversationMapper;
 import com.example.chatservice.mapper.PaticipantInfoMapper;
 import com.example.chatservice.repository.ConversationRepository;
+import com.example.chatservice.service.AttachmentService;
 import com.example.chatservice.service.ConversationService;
+import com.example.chatservice.service.MessageService;
 import com.example.commonservice.exception.AccessDeniedException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.model.FriendshipCreatedEvent;
+import com.example.commonservice.model.FriendshipDeleteEvent;
 import com.example.commonservice.model.PageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -33,6 +33,10 @@ public class ConversationServiceImp implements ConversationService {
     ConversationRepository conversationRepository;
     @Autowired
     PaticipantInfoMapper paticipantInfoMapper;
+    @Autowired
+    AttachmentService attachmentService;
+    @Autowired
+    MessageService messageService;
     @Override
     public List<Conversation> getAllConversation() {
         return conversationRepository.findAll();
@@ -142,7 +146,6 @@ public class ConversationServiceImp implements ConversationService {
     @Override
     @KafkaListener(topics = "friendship-created", containerFactory = "kafkaListenerContainerFactory")
     public void createConversation(FriendshipCreatedEvent friendshipCreatedEvent) {
-        System.out.println("Received FriendshipCreatedEvent: {}");
 
         // Tạo danh sách participant
         ParticipantInfo p1 = new ParticipantInfo(
@@ -175,5 +178,23 @@ public class ConversationServiceImp implements ConversationService {
         conversation.setLastMessageContent("");
 
         conversationRepository.save(conversation);
+    }
+
+    @Override
+    @KafkaListener(topics = "friendship-delete", containerFactory = "kafkaListenerContainerFactory")
+    public void deleteConversation(FriendshipDeleteEvent event) {
+        // Tìm conversation DOUBLE giữa 2 người
+        Conversation conversation = conversationRepository
+                .findDoubleConversationByParticipants(event.getIdSender(), event.getIdReceiver())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Không có cuộc trò chuyện hợp lệ giữa: " + event.getIdSender() + " và " + event.getIdReceiver()
+                ));
+
+        String conversationId = conversation.getIdConversation();
+
+        // Xoá conversation + dữ liệu liên quan
+        conversationRepository.deleteById(conversationId);
+        messageService.deleteByIdConversation(conversationId);
+        attachmentService.deleteByIdConversation(conversationId);
     }
 }

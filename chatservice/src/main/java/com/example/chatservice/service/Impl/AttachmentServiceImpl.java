@@ -48,4 +48,9 @@ public class AttachmentServiceImpl implements AttachmentService {
     public void deleteAttachment(String id) {
         attachmentRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteByIdConversation(String idConversation) {
+        attachmentRepository.deleteByIdConversation(idConversation);
+    }
 }

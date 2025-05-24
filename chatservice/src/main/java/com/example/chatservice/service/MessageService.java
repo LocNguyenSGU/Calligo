@@ -9,5 +9,6 @@ public interface MessageService {
      Message saveMessage(Message message);
 
      Message updateMessage(Message message, String idMessage);
+     void deleteByIdConversation(String idConversation);
 
 }

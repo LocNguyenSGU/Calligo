@@ -35,4 +35,9 @@ public class MessageServiceImp implements MessageService {
         message1.setAttachments(message.getAttachments());
         return null;
     }
+
+    @Override
+    public void deleteByIdConversation(String idConversation) {
+        messageRepository.deleteByIdConversation(idConversation);
+    }
 }

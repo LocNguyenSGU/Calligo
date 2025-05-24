@@ -12,4 +12,5 @@ public interface AttachmentService {
     List<Attachment> getAllAttachments();
     Attachment updateAttachment(String id, Attachment attachment);
     void deleteAttachment(String id);
+    void deleteByIdConversation(String idConversation);
 }

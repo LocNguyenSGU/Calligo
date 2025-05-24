@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface MessageRepository extends MongoRepository<Message, String> {
     List<Message> findByIdConversation(String idConversasion);
+    void deleteByIdConversation(String idConversation);
 }

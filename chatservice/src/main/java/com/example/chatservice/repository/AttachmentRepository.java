@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface AttachmentRepository extends MongoRepository<Attachment, String> {
     List<Attachment> findByIdMessage(String idMessage);
     Optional<Attachment> findById(String idAttachment);
+    void deleteByIdConversation(String idConversation);
 }
