@@ -7,6 +7,7 @@ import com.example.commonservice.model.FriendshipCreatedEvent;
 import com.example.commonservice.model.FriendshipDeleteEvent;
 import com.example.commonservice.model.PageResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ConversationService {
@@ -17,5 +18,6 @@ public interface ConversationService {
     void removeParticipant(String conversationId, String idAccount);
     void updateParticipantInfo(String conversationId, String participantId, UpdateParticipantRequestDTO request);
     void createConversation(FriendshipCreatedEvent friendshipCreatedEvent);
-    public void deleteConversation(FriendshipDeleteEvent friendshipDeleteEvent);
+    void deleteConversation(FriendshipDeleteEvent friendshipDeleteEvent);
+    void updateLastMessageInfo(String conversationId, String content, LocalDateTime lastTime);
 }

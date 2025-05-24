@@ -44,7 +44,8 @@ public class ConversationServiceImp implements ConversationService {
 
     @Override
     public Conversation getConversationById(String idConversation) {
-        return conversationRepository.findByIdConversation(idConversation);
+        return conversationRepository.findByIdConversation(idConversation)
+                .orElseThrow(() -> new ResourceNotFoundException("Không có conversation với id: " + idConversation));
     }
     @Override
     public PageResponse<Conversation> getConversationsByAccountId(String idAccount, int page, int size, String sortDirection) {
@@ -196,5 +197,14 @@ public class ConversationServiceImp implements ConversationService {
         conversationRepository.deleteById(conversationId);
         messageService.deleteByIdConversation(conversationId);
         attachmentService.deleteByIdConversation(conversationId);
+    }
+
+    @Override
+    public void updateLastMessageInfo(String conversationId, String content, LocalDateTime lastTime) {
+        conversationRepository.findByIdConversation(conversationId).ifPresent(conversation -> {
+            conversation.setLastMessageContent(content);
+            conversation.setDateUpdateMessage(lastTime);
+            conversationRepository.save(conversation);
+        });
     }
 }

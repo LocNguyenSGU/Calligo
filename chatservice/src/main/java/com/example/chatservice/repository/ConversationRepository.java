@@ -12,7 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
-    Conversation findByIdConversation(String idConversation);
+//    Conversation findByIdConversation(String idConversation);
+    @Query("{ '_id': ?0 }")
+    Optional<Conversation> findByIdConversation(String idConversation);
     @Query("{ 'participantInfos.idAccount': ?0 }")
     Page<Conversation> findByParticipantInfos_IdAccount(String idAccount, Pageable pageable);
 

@@ -21,6 +21,7 @@ public class Conversation {
     private String name;
     private String avatar;
     private LocalDateTime dateCreate;
+    private LocalDateTime dateUpdateMessage;
     private String lastMessageContent;
     private int numberMember;
     private List<ParticipantInfo> participantInfos;

@@ -4,6 +4,7 @@ import com.example.chatservice.entity.Message;
 import com.example.chatservice.observe.Impl.WebSocketMessageObserve;
 import com.example.chatservice.observe.MessageObserve;
 import com.example.chatservice.observe.MessageSubject;
+import com.example.chatservice.service.ConversationService;
 import com.example.chatservice.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -14,6 +15,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class ChatWebsocketController {
     public List<String> publicIdConversation = new ArrayList<>();
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private ConversationService conversationService;
 
     public ChatWebsocketController(SimpMessagingTemplate simpMessagingTemplate, MessageSubject messageSubject) {
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -42,6 +46,7 @@ public class ChatWebsocketController {
     public void receiveMessage(@DestinationVariable String idConversation, Message message, Principal principal,
                                @Header("simpSessionId") String sessionId) {
         messageService.saveMessage(message);
+        conversationService.updateLastMessageInfo(message.getIdConversation(), message.getContent(), LocalDateTime.now());
         sendMessage(idConversation, message, sessionId);
     }
 

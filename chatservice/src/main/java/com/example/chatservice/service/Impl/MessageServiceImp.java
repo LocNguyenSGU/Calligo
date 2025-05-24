@@ -2,9 +2,11 @@ package com.example.chatservice.service.Impl;
 
 import com.example.chatservice.entity.Message;
 import com.example.chatservice.repository.MessageRepository;
+import com.example.chatservice.service.ConversationService;
 import com.example.chatservice.service.MessageService;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
