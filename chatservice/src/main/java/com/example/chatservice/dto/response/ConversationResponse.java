@@ -7,18 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 public class ConversationResponse {
     private String idConversation;
-    private ConversationType type;  // "double" hoặc "group"
+    private ConversationType type;
     private String name;
     private String avatar;
     private LocalDateTime dateCreate;
-    private String idLastMessage;
+    private LocalDateTime dateUpdateMessage;
+    private String lastMessageContent;
     private int numberMember;
+    private List<ParticipantInfoResponse> participantInfos;
 }

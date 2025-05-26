@@ -23,7 +23,9 @@ public class KeyAuthFilter extends AbstractGatewayFilterFactory<Object> {
 
     // Danh sách API không yêu cầu xác thực
     private static final List<String> WHITELISTED_APIS = List.of(
-            "/api/v1/user-service/auth/.*"
+            "/api/v1/user-service/auth/.*",
+            "/api/v1/friend-service/.*"
+
     );
 
     @Override

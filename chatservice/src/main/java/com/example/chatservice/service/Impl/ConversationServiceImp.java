@@ -2,6 +2,8 @@ package com.example.chatservice.service.Impl;
 
 import com.example.chatservice.dto.request.AddParticipantRequestDTO;
 import com.example.chatservice.dto.request.UpdateParticipantRequestDTO;
+import com.example.chatservice.dto.response.ConversationResponse;
+import com.example.chatservice.dto.response.ParticipantInfoResponse;
 import com.example.chatservice.eenum.ConversationType;
 import com.example.chatservice.eenum.ParicipantRole;
 import com.example.chatservice.entity.Conversation;
@@ -12,11 +14,14 @@ import com.example.chatservice.repository.ConversationRepository;
 import com.example.chatservice.service.AttachmentService;
 import com.example.chatservice.service.ConversationService;
 import com.example.chatservice.service.MessageService;
+import com.example.chatservice.service.UserClientService;
 import com.example.commonservice.exception.AccessDeniedException;
 import com.example.commonservice.exception.ResourceNotFoundException;
 import com.example.commonservice.model.FriendshipCreatedEvent;
 import com.example.commonservice.model.FriendshipDeleteEvent;
 import com.example.commonservice.model.PageResponse;
+import com.example.commonservice.model.ResponseDataMessage;
+import com.example.commonservice.model.UserServiceModal.AccountBasicResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -25,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -37,6 +43,8 @@ public class ConversationServiceImp implements ConversationService {
     AttachmentService attachmentService;
     @Autowired
     MessageService messageService;
+    @Autowired
+    UserClientService userClientService;
     @Override
     public List<Conversation> getAllConversation() {
         return conversationRepository.findAll();
@@ -48,7 +56,7 @@ public class ConversationServiceImp implements ConversationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không có conversation với id: " + idConversation));
     }
     @Override
-    public PageResponse<Conversation> getConversationsByAccountId(String idAccount, int page, int size, String sortDirection) {
+    public PageResponse<ConversationResponse> getConversationsByAccountId(String idAccount, int page, int size, String sortDirection) {
         Sort sort = sortDirection.equalsIgnoreCase("asc") ?
                 Sort.by("dateCreate").ascending() :
                 Sort.by("dateCreate").descending();
@@ -57,7 +65,57 @@ public class ConversationServiceImp implements ConversationService {
 
         Page<Conversation> pageResult = conversationRepository.findByParticipantInfos_IdAccount(idAccount, pageable);
 
-        return new PageResponse<>(pageResult);
+        // Lấy tất cả idAccount của participant trong toàn bộ trang
+        Set<Integer> accountIds = pageResult.getContent().stream()
+                .flatMap(convo -> convo.getParticipantInfos().stream())
+                .map(ParticipantInfo::getIdAccount)
+                .map(Integer::parseInt)
+                .collect(Collectors.toSet());
+
+        // Gọi API userservice để lấy thông tin user
+        Map<Integer, AccountBasicResponse> userMap = userClientService
+                .getUsersByIds(new ArrayList<>(accountIds))
+                .getBody();
+
+        // Tạo danh sách ConversationResponse
+        List<ConversationResponse> conversationResponses = pageResult.getContent().stream()
+                .map(convo -> {
+                    List<ParticipantInfoResponse> participantResponses = convo.getParticipantInfos().stream()
+                            .map(participant -> {
+                                AccountBasicResponse userInfo = userMap.get(Integer.parseInt(participant.getIdAccount()));
+                                return new ParticipantInfoResponse(
+                                        participant.getIdAccount(),
+                                        participant.getNickname(),
+                                        participant.getRole().name(),
+                                        participant.getDateJoin(),
+                                        userInfo != null ? userInfo.getFirstName() : null,
+                                        userInfo != null ? userInfo.getLastName() : null,
+                                        userInfo != null ? userInfo.getImgAvatar() : null
+                                );
+                            })
+                            .collect(Collectors.toList());
+
+                    return new ConversationResponse(
+                            convo.getIdConversation(),
+                            convo.getType(),
+                            convo.getName(),
+                            convo.getAvatar(),
+                            convo.getDateCreate(),
+                            convo.getDateUpdateMessage(),
+                            convo.getLastMessageContent(),
+                            convo.getNumberMember(),
+                            participantResponses
+                    );
+                })
+                .toList();
+
+        return new PageResponse<>(
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.getTotalPages(),
+                conversationResponses
+        );
     }
 
     @Override

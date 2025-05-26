@@ -20,4 +20,11 @@ public class PageResponse<T> {
         this.totalElements = page.getTotalElements();
         this.data = page.getContent();
     }
+    public PageResponse(int page, int size, long totalElements, int totalPages, List<T> content) {
+        this.currentPage = page;
+        this.pageSize = size;
+        this.totalElements = totalElements;
+        this.totalPage = totalPages;
+        this.data = content;
+    }
 }

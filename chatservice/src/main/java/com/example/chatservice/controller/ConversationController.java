@@ -2,6 +2,7 @@ package com.example.chatservice.controller;
 
 import com.example.chatservice.dto.request.AddParticipantRequestDTO;
 import com.example.chatservice.dto.request.UpdateParticipantRequestDTO;
+import com.example.chatservice.dto.response.ConversationResponse;
 import com.example.chatservice.dto.response.ResponseData;
 import com.example.chatservice.entity.Conversation;
 import com.example.chatservice.service.ConversationService;
@@ -23,7 +24,7 @@ public class ConversationController {
     ConversationService conversationService;
 
     @GetMapping
-    public ResponseData getConversation() {
+    public ResponseData getConversations() {
 
         List<Conversation> responses = conversationService.getAllConversation();
         return ResponseData.builder()
@@ -45,7 +46,7 @@ public class ConversationController {
             return ResponseEntity.badRequest().body(new ResponseDataMessage(400, "sortDirection phải là 'asc' hoặc 'desc'", null, HttpStatus.BAD_REQUEST));
         }
 
-        PageResponse<Conversation> response = conversationService.getConversationsByAccountId(idAccount, page, size, sortDirection);
+        PageResponse<ConversationResponse> response = conversationService.getConversationsByAccountId(idAccount, page, size, sortDirection);
 
         if (response.getTotalElements() == 0) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDataMessage(204, "Không có cuộc trò chuyện nào", null, HttpStatus.NO_CONTENT));
@@ -53,7 +54,6 @@ public class ConversationController {
 
         return ResponseEntity.ok(new ResponseDataMessage(200, "Lấy danh sách cuộc trò chuyện thành công", HttpStatus.OK, response));
     }
-
 
     @PostMapping("/{conversationId}/participants")
     public ResponseEntity<?> addParticipant(@PathVariable String conversationId,

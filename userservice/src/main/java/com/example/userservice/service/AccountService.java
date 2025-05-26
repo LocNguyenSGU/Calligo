@@ -10,6 +10,8 @@ import com.example.userservice.dto.response.AccountResponse;
 import com.example.userservice.entity.Account;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AccountService {
@@ -19,12 +21,13 @@ public interface AccountService {
     AccountResponse getAccountResponseByEmail(String email);
     AccountResponse getAccountResponseByPhone(String phone);
     AccountBasicResponse getAccountBasicResponseByPhone(String phone);
+    AccountBasicResponse getAccountBasicResponseByIdAccount(int idAccount);
     void createAccount(SignUpRequest signUpRequest);
     boolean existsAccountByEmail(String email);
     boolean existsAccountByPhoneNumber(String phoneNumber);
     AccountRelationResponse getInfoAccountBasicByPhoneWithRelation(String phone, int idAccountSource);
     AccountResponse updateAccount(AccountUpdateRequest userUpdateRequest, int idAccount);
-
     PageResponse<AccountResponse> getAccounts(String email, int page, int size, String sortDirection);
+    Map<Integer, AccountBasicResponse> getAccountBasicByIds(List<Integer> ids);
 
 }

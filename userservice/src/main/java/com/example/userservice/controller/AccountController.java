@@ -12,11 +12,17 @@ import com.example.userservice.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user-service/accounts")
@@ -43,6 +49,22 @@ public class AccountController {
         AccountResponse accountResponse = accountService.getAccountResponseByPhone(phone);
         return new ResponseEntity<>(new ResponseDataMessage("Lay thong tin account", accountResponse), HttpStatus.OK);
     }
+
+    @GetMapping("/basic/{id}")
+    public ResponseEntity<ResponseDataMessage> getInfoAccountById(@PathVariable int id) {
+        AccountBasicResponse account = accountService.getAccountBasicResponseByIdAccount(id);
+        return new ResponseEntity<>(new ResponseDataMessage("Lay thong tin account", account), HttpStatus.OK);
+    }
+
+    @GetMapping("/basic/internal/users")
+    public ResponseEntity<Map<Integer, AccountBasicResponse>> getUsersByIds(
+            @RequestParam List<Integer> ids
+    ) {
+        Map<Integer, AccountBasicResponse> result = accountService.getAccountBasicByIds(ids);
+
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/basic/phone/{phone}")
     public ResponseEntity<?> getInfoAccountBasicByPhone(@PathVariable String phone) {
         AccountBasicResponse accountBasicResponse = accountService.getAccountBasicResponseByPhone(phone);
