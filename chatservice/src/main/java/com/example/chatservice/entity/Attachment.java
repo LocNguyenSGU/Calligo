@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 public class Attachment {
     @Id
     private String idAttachment;
-    private String idMessage;
-    private String idConversation;
     private AttachmentType type;
     private String url;
     private String size;

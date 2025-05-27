@@ -30,7 +30,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // Đăng ký endpoint
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Cho React (SockJS) dùng:
         registry.addEndpoint("/ws-chat").setAllowedOriginPatterns("*").withSockJS();
+
+        // Cho K6 dùng (WebSocket thuần):
+        registry.addEndpoint("/ws-chat-native").setAllowedOriginPatterns("*");
+
         registry.addEndpoint("/ws-call").setAllowedOriginPatterns("*").withSockJS();
     }
 

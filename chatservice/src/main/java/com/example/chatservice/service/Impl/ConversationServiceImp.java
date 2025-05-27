@@ -11,7 +11,6 @@ import com.example.chatservice.entity.ParticipantInfo;
 import com.example.chatservice.mapper.ConversationMapper;
 import com.example.chatservice.mapper.PaticipantInfoMapper;
 import com.example.chatservice.repository.ConversationRepository;
-import com.example.chatservice.service.AttachmentService;
 import com.example.chatservice.service.ConversationService;
 import com.example.chatservice.service.MessageService;
 import com.example.chatservice.service.UserClientService;
@@ -39,8 +38,6 @@ public class ConversationServiceImp implements ConversationService {
     ConversationRepository conversationRepository;
     @Autowired
     PaticipantInfoMapper paticipantInfoMapper;
-    @Autowired
-    AttachmentService attachmentService;
     @Autowired
     MessageService messageService;
     @Autowired
@@ -254,7 +251,6 @@ public class ConversationServiceImp implements ConversationService {
         // Xoá conversation + dữ liệu liên quan
         conversationRepository.deleteById(conversationId);
         messageService.deleteByIdConversation(conversationId);
-        attachmentService.deleteByIdConversation(conversationId);
     }
 
     @Override
