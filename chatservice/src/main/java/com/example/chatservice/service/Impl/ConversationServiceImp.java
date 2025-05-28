@@ -23,6 +23,7 @@ import com.example.commonservice.model.ResponseDataMessage;
 import com.example.commonservice.model.UserServiceModal.AccountBasicResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,8 @@ public class ConversationServiceImp implements ConversationService {
     MessageService messageService;
     @Autowired
     UserClientService userClientService;
+    @Autowired
+    UserClientServiceImpl userClientServiceIml;
     @Override
     public List<Conversation> getAllConversation() {
         return conversationRepository.findAll();
@@ -53,6 +56,7 @@ public class ConversationServiceImp implements ConversationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Không có conversation với id: " + idConversation));
     }
     @Override
+    @Cacheable(value = "conversations", key = "#idAccount + '-' + #page + '-' + #size + '-' + #sortDirection")
     public PageResponse<ConversationResponse> getConversationsByAccountId(String idAccount, int page, int size, String sortDirection) {
         Sort sort = sortDirection.equalsIgnoreCase("asc") ?
                 Sort.by("dateCreate").ascending() :
@@ -70,9 +74,9 @@ public class ConversationServiceImp implements ConversationService {
                 .collect(Collectors.toSet());
 
         // Gọi API userservice để lấy thông tin user
-        Map<Integer, AccountBasicResponse> userMap = userClientService
-                .getUsersByIds(new ArrayList<>(accountIds))
-                .getBody();
+        Map<Integer, AccountBasicResponse> userMap = userClientServiceIml
+                .getUsersByIds(new ArrayList<>(accountIds));
+//                .getBody();
 
         // Tạo danh sách ConversationResponse
         List<ConversationResponse> conversationResponses = pageResult.getContent().stream()

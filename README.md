@@ -14,6 +14,19 @@
 
 ## 🌐 HTTP API Test
 
+![HTTP Load Chart - Response Time](img_2.png)  
+*Biểu đồ chi tiết*
+
+![HTTP Load Chart - Response Time](img_3.png)  
+*Biểu đồ chi tiết*
+
+> **Endpoint**: `/api/v1/chat-service/conversation/idAccount/6`  
+> 👥 **Người dùng**: 1000 tổng | Ramp-up: 30 người/giây  
+> 🔄 **34,705 yêu cầu** | ❌ **0 lỗi (0%)**  -> Rất tốt
+> ⏳ **95th percentile**: 3,1s | **Max**: 5s  
+> ⏳**Media** | 5ms -> Rất tốt
+
+
 ![HTTP Load Chart - RPS](img.png)  
 *Bảng mô tả tổng quan*
 

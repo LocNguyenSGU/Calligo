@@ -2,11 +2,12 @@ package com.example.commonservice.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.data.domain.Page;
 @Data
-public class PageResponse<T> {
+public class PageResponse<T> implements Serializable {
     int currentPage;
     int totalPage;
     int pageSize;

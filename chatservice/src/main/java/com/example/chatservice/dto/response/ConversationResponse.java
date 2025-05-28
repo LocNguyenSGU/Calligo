@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +15,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConversationResponse {
+public class ConversationResponse implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private String idConversation;
     private ConversationType type;
     private String name;

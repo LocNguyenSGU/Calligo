@@ -1,6 +1,9 @@
 package com.example.chatservice.eenum;
 
-public enum ConversationType {
+import java.io.Serial;
+import java.io.Serializable;
+
+public enum ConversationType implements Serializable {
     DOUBLE,
     GROUP
 }
