@@ -13,7 +13,7 @@ public class RedisCacheConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10)); // TTL 5 phút
+                .entryTtl(Duration.ofMinutes(5)); // TTL 5 phút
 
         return RedisCacheManager.builder(factory)
                 .cacheDefaults(config)
